@@ -8,15 +8,20 @@ public class Aluno {
 
     private String nome;
 
-    private long dre;
+    private final long dre;
 
     private float cra;
+    private float numeradorCra;
+    private float denominadorCra;
 
     private int creditosAcumulados;
 
     private Periodo periodoIngresso;
 
     private ItemHistorico[] historico;
+    private int contItensHistorico;
+
+    public final static int TAMANHO_MAXIMO_DO_NOME = 30;
 
     // --------------------------------
     // métodos
@@ -28,6 +33,7 @@ public class Aluno {
         this.nome = nome;
 
         this.historico = new ItemHistorico[4];
+        this.contItensHistorico = 0;
 
         Calendar calendar = Calendar.getInstance();
         int ano = calendar.get(Calendar.YEAR);
@@ -36,8 +42,10 @@ public class Aluno {
                 ano, mes <= 6 ? 1 : 2);
 
         this.cra = 0;  // desnecessário, pois 0 é o valor default de float
-        this.creditosAcumulados = 0;  // idem para int
+        this.numeradorCra = 0;
+        this.denominadorCra = 0;
 
+        this.creditosAcumulados = 0;  // idem para int
     }
 
 //    public Aluno() {
@@ -49,7 +57,7 @@ public class Aluno {
     }
 
     public void setNome(String nome) {
-        if (nome.length() > 30) {
+        if (nome.length() > TAMANHO_MAXIMO_DO_NOME) {
             // ToDo: lançar uma exceção!!!
             return;
         }
@@ -61,26 +69,88 @@ public class Aluno {
         return cra;
     }
 
+
+    // ATENÇÃO: NÃO QUEREMOS UM SETTER PÚBLICO PARA O CRA!!!!!!
+//
+//    public void setCra(float cra) {
+//        if (cra < 0 || cra > 10) {
+//            return;
+//        }
+//        this.cra = cra;
+//    }
+//
+
     public void inserirItemHistorico(
             Disciplina disciplina, float mediaFinal, Periodo periodo) {
 
-        // ToDo IMPLEMENT ME!!!
+        boolean disciplinaJaExistenteNoPeriodo = false;
 
+        // verifica se já existe no histórico essa disciplina nesse período
+        for (ItemHistorico itemHistorico : this.historico) {
 
+            if (itemHistorico.disciplinaCursada == disciplina &&
+                    itemHistorico.periodo == periodo) {
+
+                disciplinaJaExistenteNoPeriodo = true;
+
+                int creditosDaDisciplina = itemHistorico.disciplinaCursada.getCreditos();
+                this.numeradorCra -= itemHistorico.mediaFinal * creditosDaDisciplina;
+                if (itemHistorico.mediaFinal >= Siguinha.MEDIA_MINIMA_PARA_APROVACAO) {
+                    this.creditosAcumulados -= creditosDaDisciplina;
+                }
+
+                itemHistorico.mediaFinal = mediaFinal;
+            }
+        }
+
+        if (!disciplinaJaExistenteNoPeriodo) {
+            // inserir item no histórico
+
+            ItemHistorico novoItem = new ItemHistorico(
+                    disciplina, mediaFinal, periodo);
+            if (this.contItensHistorico == this.historico.length) {
+                // TRATAR OVERFLOW: copiar tudo para um array maior
+
+            }
+            this.historico[this.contItensHistorico++] = novoItem;
+        }
+
+        // atualizar creditos
+        if (mediaFinal >= Siguinha.MEDIA_MINIMA_PARA_APROVACAO) {
+            this.creditosAcumulados += disciplina.getCreditos();
+        }
+
+        // atualizar CRA:
+
+//        float numerador = 0;
+//        float denominador = 0;
+//        for (ItemHistorico itemHistorico : this.historico) {
+//            int creditos = itemHistorico.disciplinaCursada.getCreditos();
+//            numerador += itemHistorico.mediaFinal * creditos;
+//            denominador += creditos;
+//        }
+//        this.cra = numerador / denominador;
+
+        // outro jeito de atualizar o CRA (melhor performance)
+        this.numeradorCra += mediaFinal * disciplina.getCreditos();
+        this.denominadorCra += disciplina.getCreditos();
+        this.cra = this.numeradorCra / this.denominadorCra;
     }
-
-
 
     // inner class (classe auxiliar, visível apenas de dentro da classe Aluno)
     private class ItemHistorico {
 
-        private Aluno aluno;
+        public Disciplina disciplinaCursada;
 
-        private Disciplina disciplinaCursada;
+        float mediaFinal;
 
-        private float mediaFinal;
+        Periodo periodo;
 
-        private Periodo periodo;
+        ItemHistorico(Disciplina disciplinaCursada, float mediaFinal, Periodo periodo) {
+            this.disciplinaCursada = disciplinaCursada;
+            this.mediaFinal = mediaFinal;
+            this.periodo = periodo;
+        }
     }
 
 }
