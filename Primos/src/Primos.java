@@ -44,35 +44,72 @@ public class Primos {
         return true;
     }
 
-
-
     public static int[] obterPrimosViaCrivo(int n) {
-        // ToDo IMPLEMENT ME!!!
+        boolean[] candidatos = new boolean[n + 1];  // preciso ir até a posição n
+        // inicializados com  (true: (candidato a) primo; false: não é mais candidato)
 
-        return null;
+        for (int i = 2; i <= n; i++) {
+            candidatos[i] = true;
+        }
+
+        int candidatoDaVez = 2;
+        int quadradoDoCandidatoDaVez = 4;
+        int contNaoPrimos = 1;
+
+        while (quadradoDoCandidatoDaVez <= n) {
+            if (candidatos[candidatoDaVez]) {
+                for (int i = quadradoDoCandidatoDaVez; i <= n; i += candidatoDaVez) {
+                    if (candidatos[i]) {
+                        candidatos[i] = false;
+                        contNaoPrimos++;
+                    }
+                }
+            }
+            candidatoDaVez++;
+            quadradoDoCandidatoDaVez = candidatoDaVez * candidatoDaVez;
+        }
+
+        int contPrimos = n - contNaoPrimos;
+
+        int[] primos = new int[contPrimos];
+        int contPrimosCopiados = 0;
+        for (int i = 2; i <= n; i++) {
+            if (candidatos[i]) {
+                primos[contPrimosCopiados++] = i;
+            }
+        }
+
+        return primos;
     }
 
     public static void main(String[] args) {
 
-        for (int n = 1; n <= 20; n++) {
+        int n = 4_000_000;
 
-            long inicio = System.currentTimeMillis();
-            int[] primos = obterPrimos(n);
-            long duracao = System.currentTimeMillis() - inicio;
+        long inicio = System.currentTimeMillis();
+        int[] primos = obterPrimos(n);
+        long duracao = System.currentTimeMillis() - inicio;
+        System.out.printf("Há %d primos no intervalo [1, %d].\n",
+                primos.length, n);
+        System.out.printf("Sem crivo: duração = %.3f\n", duracao / 1000f);
 
-            System.out.printf("Há %d primos no intervalo [1, %d].\n",
-                    primos.length, n);
+        inicio = System.currentTimeMillis();
+        primos = obterPrimosViaCrivo(n);
+        duracao = System.currentTimeMillis() - inicio;
+        System.out.printf("Há %d primos no intervalo [1, %d].\n",
+                primos.length, n);
+        System.out.printf("Via crivo: duração = %.3f\n", duracao / 1000f);
 
-            // Se quiséssemos imprimir o array na tela
+        // Se quiséssemos imprimir o array na tela
 
-            for (int i = 0; i < primos.length; i++) {
-                int x = primos[i];
-                if (i < primos.length - 1) {
-                    System.out.printf("%d, ", x);
-                } else {
-                    System.out.printf("%d\n", x);
-                }
-            }
+//        for (int i = 0; i < primos.length; i++) {
+//            int x = primos[i];
+//            if (i < primos.length - 1) {
+//                System.out.printf("%d, ", x);
+//            } else {
+//                System.out.printf("%d\n", x);
+//            }
+//        }
 //
 //            // ou...
 //            for (int x : primos) {  // for each... (para cada elemento de "primos"...)
@@ -81,6 +118,5 @@ public class Primos {
 //
 //            // ou...
 //            System.out.println(Arrays.toString(primos));
-        }
     }
 }
