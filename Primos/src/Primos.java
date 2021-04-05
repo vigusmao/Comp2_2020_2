@@ -8,10 +8,43 @@ public class Primos {
      * @return um array de inteiros com os primos no intervalo dado.
      */
     public static int[] obterPrimos(int n) {
-        // ToDo IMPLEMENT ME!!!
+        ArrayComRodinhas meuArrayComRodinhas = new ArrayComRodinhas();
 
-        return null;
+        for (int x = 2; x <= n; x++) {
+            if (ehPrimo(x)) {
+                meuArrayComRodinhas.add(x);
+            }
+        }
+
+        int[] apenasPrimos = new int[meuArrayComRodinhas.getQuantElementos()];
+        for (int i = 0; i < meuArrayComRodinhas.getQuantElementos(); i++) {
+            apenasPrimos[i] = meuArrayComRodinhas.get(i);
+        }
+
+        return apenasPrimos;
     }
+
+    private static boolean ehPrimo(int x) {
+        if (x < 2) {
+            return false;
+        }
+        if (x == 2) {
+            return true;
+        }
+        if (x % 2 == 0) {
+            return false;
+        }
+
+        for (int divisor = 3; divisor * divisor <= x; divisor += 2) {
+            if (x % divisor == 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
 
     public static int[] obterPrimosViaCrivo(int n) {
         // ToDo IMPLEMENT ME!!!
@@ -21,7 +54,7 @@ public class Primos {
 
     public static void main(String[] args) {
 
-        for (int n = 10; n <= 10_000; n *= 10) {
+        for (int n = 1; n <= 20; n++) {
 
             long inicio = System.currentTimeMillis();
             int[] primos = obterPrimos(n);
@@ -37,17 +70,17 @@ public class Primos {
                 if (i < primos.length - 1) {
                     System.out.printf("%d, ", x);
                 } else {
-                    System.out.printf("%d", x);
+                    System.out.printf("%d\n", x);
                 }
             }
-
-            // ou...
-            for (int x : primos) {  // for each... (para cada elemento de "primos"...)
-                System.out.println(x);
-            }
-
-            // ou...
-            System.out.println(Arrays.toString(primos));
+//
+//            // ou...
+//            for (int x : primos) {  // for each... (para cada elemento de "primos"...)
+//                System.out.println(x);
+//            }
+//
+//            // ou...
+//            System.out.println(Arrays.toString(primos));
         }
     }
 }
