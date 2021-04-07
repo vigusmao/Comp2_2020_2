@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Aluno {
@@ -18,8 +19,7 @@ public class Aluno {
 
     private Periodo periodoIngresso;
 
-    private ItemHistorico[] historico;
-    private int contItensHistorico;
+    private ArrayList<ItemHistorico> historico;
 
     public final static int TAMANHO_MAXIMO_DO_NOME = 30;
 
@@ -32,8 +32,7 @@ public class Aluno {
         this.dre = dre;
         this.nome = nome;
 
-        this.historico = new ItemHistorico[4];
-        this.contItensHistorico = 0;
+        this.historico = new ArrayList<>();  // com <>, o compilador substitui por <ItemHistorico>
 
         Calendar calendar = Calendar.getInstance();
         int ano = calendar.get(Calendar.YEAR);
@@ -116,11 +115,7 @@ public class Aluno {
 
             ItemHistorico novoItem = new ItemHistorico(
                     disciplina, mediaFinal, periodo);
-            if (this.contItensHistorico == this.historico.length) {
-                // TRATAR OVERFLOW: copiar tudo para um array maior
-
-            }
-            this.historico[this.contItensHistorico++] = novoItem;
+            this.historico.add(novoItem);
         }
 
         // atualizar creditos
@@ -148,8 +143,8 @@ public class Aluno {
     public String getHistoricoParaImpressao() {
         String resultado = "Aluno(a): " + this.nome +
                 " (DRE: " + this.dre + ")\n";
-        for (int i = 0; i < this.contItensHistorico; i++) {
-            ItemHistorico itemHistorico = this.historico[i];
+        for (int i = 0; i < this.historico.size(); i++) {
+            ItemHistorico itemHistorico = this.historico.get(i);
             resultado += itemHistorico.periodo.getAno();
             resultado += ".";
             resultado += itemHistorico.periodo.getSemestre();
@@ -157,7 +152,7 @@ public class Aluno {
             resultado += itemHistorico.disciplinaCursada.getNome();
             resultado += " - ";
             resultado += String.format("%.1f", itemHistorico.mediaFinal);
-            if (i != this.contItensHistorico - 1) {  // se não é o último item...
+            if (i != this.historico.size() - 1) {  // se não é o último item...
                 resultado += "\n";
             }
         }
