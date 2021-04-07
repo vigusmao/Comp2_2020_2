@@ -1,6 +1,8 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.DecimalFormat;
+
 import static org.junit.Assert.*;
 
 public class AlunoTest {
@@ -12,6 +14,9 @@ public class AlunoTest {
     private Disciplina calculo1;
     private Periodo periodo20201;
     private Periodo periodo20202;
+
+    private DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance();
+    private char decimalSeparator = decimalFormat.getDecimalFormatSymbols().getDecimalSeparator();
 
     @Before
     public void setUp() {
@@ -41,7 +46,7 @@ public class AlunoTest {
     public void testarAtualizacaoHistoricoComAprovacoes() {
         fulana.inserirItemHistorico(algGraf, 10, periodo20201);
         String historicoDesejado = "Aluno(a): Fulana de Tal (DRE: 1234)\n" +
-                "2020.1 - Algoritmos e Grafos - 10,0";
+                "2020.1 - Algoritmos e Grafos - 10" + decimalSeparator + "0";
 
         assertEquals("O histórico deve conter todas as disciplinas cursadas",
                 historicoDesejado, fulana.getHistoricoParaImpressao());
@@ -66,7 +71,7 @@ public class AlunoTest {
     public void testarAtualizacaoHistoricoComReprovacoes() {
         fulana.inserirItemHistorico(calculo1, 3, periodo20201);
         String historicoDesejado = "Aluno(a): Fulana de Tal (DRE: 1234)\n" +
-                "2020.1 - Calculo 1 - 3,0";
+                "2020.1 - Calculo 1 - 3" + decimalSeparator + "0";
 
         assertEquals("O histórico deve conter todas as disciplinas cursadas",
                 historicoDesejado, fulana.getHistoricoParaImpressao());
@@ -79,7 +84,7 @@ public class AlunoTest {
         fulana.inserirItemHistorico(calculo1, 8.5f, periodo20201);
 
         String historicoDesejado = "Aluno(a): Fulana de Tal (DRE: 1234)\n" +
-                "2020.1 - Calculo 1 - 8,5";
+                "2020.1 - Calculo 1 - 8" + decimalSeparator + "5";
 
         assertEquals("O histórico deve conter todas as disciplinas cursadas",
                 historicoDesejado, fulana.getHistoricoParaImpressao());
@@ -91,8 +96,8 @@ public class AlunoTest {
         fulana.inserirItemHistorico(calculo1, 8.5f, periodo20202);
 
         String historicoDesejado = "Aluno(a): Fulana de Tal (DRE: 1234)\n" +
-                "2020.1 - Calculo 1 - 3,0\n" +
-                "2020.2 - Calculo 1 - 8,5";
+                "2020.1 - Calculo 1 - 3" + decimalSeparator + "0\n" +
+                "2020.2 - Calculo 1 - 8" + decimalSeparator + "5";
 
         assertEquals("O histórico deve conter todas as disciplinas cursadas",
                 historicoDesejado, fulana.getHistoricoParaImpressao());
