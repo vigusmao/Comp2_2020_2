@@ -69,6 +69,10 @@ public class Aluno {
         return cra;
     }
 
+    public int getCreditosAcumulados() {
+        return creditosAcumulados;
+    }
+
 
     // ATENÇÃO: NÃO QUEREMOS UM SETTER PÚBLICO PARA O CRA!!!!!!
 //
@@ -87,6 +91,10 @@ public class Aluno {
 
         // verifica se já existe no histórico essa disciplina nesse período
         for (ItemHistorico itemHistorico : this.historico) {
+
+            if (itemHistorico == null) {
+                break;
+            }
 
             if (itemHistorico.disciplinaCursada == disciplina &&
                     itemHistorico.periodo == periodo) {
@@ -135,6 +143,25 @@ public class Aluno {
         this.numeradorCra += mediaFinal * disciplina.getCreditos();
         this.denominadorCra += disciplina.getCreditos();
         this.cra = this.numeradorCra / this.denominadorCra;
+    }
+
+    public String getHistoricoParaImpressao() {
+        String resultado = "Aluno(a): " + this.nome +
+                " (DRE: " + this.dre + ")\n";
+        for (int i = 0; i < this.contItensHistorico; i++) {
+            ItemHistorico itemHistorico = this.historico[i];
+            resultado += itemHistorico.periodo.getAno();
+            resultado += ".";
+            resultado += itemHistorico.periodo.getSemestre();
+            resultado += " - ";
+            resultado += itemHistorico.disciplinaCursada.getNome();
+            resultado += " - ";
+            resultado += String.format("%.1f", itemHistorico.mediaFinal);
+            if (i != this.contItensHistorico - 1) {  // se não é o último item...
+                resultado += "\n";
+            }
+        }
+        return resultado;
     }
 
     // inner class (classe auxiliar, visível apenas de dentro da classe Aluno)

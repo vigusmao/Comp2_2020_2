@@ -13,4 +13,12 @@ public class Periodo {
         this.ano = ano;
         this.semestre = semestre;
     }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public int getSemestre() {
+        return semestre;
+    }
 }
