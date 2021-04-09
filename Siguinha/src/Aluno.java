@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class Aluno {
 
@@ -72,6 +73,9 @@ public class Aluno {
         return creditosAcumulados;
     }
 
+    public long getDre() {
+        return dre;
+    }
 
     // ATENÇÃO: NÃO QUEREMOS UM SETTER PÚBLICO PARA O CRA!!!!!!
 //
@@ -157,6 +161,23 @@ public class Aluno {
             }
         }
         return resultado;
+    }
+
+//    @Override
+//    public boolean equals(Object outro) {   // override
+//        if (outro == null) return false;
+//        if (outro.getClass() != this.getClass()) return false;
+//
+//        return dre == ((Aluno) outro).getDre();
+//    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Aluno aluno = (Aluno) o;
+        return dre == aluno.dre &&
+                Objects.equals(nome, aluno.getNome());
     }
 
     // inner class (classe auxiliar, visível apenas de dentro da classe Aluno)
