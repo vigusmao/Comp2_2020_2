@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 
 public class Aluno {
@@ -12,7 +11,11 @@ public class Aluno {
 
     private final long dre;
 
+//    public float cra;  // público para leitura e escrita de qualquer lugar do código
+//    float cra;  // "public" APENAS DENTRO DO MESMO package!!!
+//    protected float cra;  // "public" dentro do mesmo package + subclasses
     private float cra;
+
     private float numeradorCra;
     private float denominadorCra;
 
@@ -22,24 +25,29 @@ public class Aluno {
 
     private ArrayList<ItemHistorico> historico;
 
+    private int anoNascimento;
+
     public final static int TAMANHO_MAXIMO_DO_NOME = 30;
 
     // --------------------------------
     // métodos
     // --------------------------------
 
+    public Aluno() {
+        this(0, "Sem Nome");  // chamando a sobrecarga de construtor deste objeto
+    }
+
     public Aluno(long dre, String nome) {
+
+//        super();  // esta linha é acrescentada automaticamente pelo compilador,
+//                  // se nós não chamarmos explicitamente o construtor da superclasse
 
         this.dre = dre;
         this.nome = nome;
 
         this.historico = new ArrayList<>();  // com <>, o compilador substitui por <ItemHistorico>
 
-        Calendar calendar = Calendar.getInstance();
-        int ano = calendar.get(Calendar.YEAR);
-        int mes = calendar.get(Calendar.MONTH);
-        this.periodoIngresso = new Periodo(
-                ano, mes <= 6 ? 1 : 2);
+        this.periodoIngresso = Siguinha.obterPeriodoCorrente();
 
         this.cra = 0;  // desnecessário, pois 0 é o valor default de float
         this.numeradorCra = 0;
@@ -77,6 +85,14 @@ public class Aluno {
         return dre;
     }
 
+    public int getAnoNascimento() {
+        return anoNascimento;
+    }
+
+    public int getIdade() {
+        return Siguinha.obterAnoCorrente() - anoNascimento;
+    }
+
     // ATENÇÃO: NÃO QUEREMOS UM SETTER PÚBLICO PARA O CRA!!!!!!
 //
 //    public void setCra(float cra) {
@@ -86,6 +102,11 @@ public class Aluno {
 //        this.cra = cra;
 //    }
 //
+
+    public void inserirItemHistorico(Disciplina disciplina, float mediaFinal) {
+        Periodo periodoCorrente = Siguinha.obterPeriodoCorrente();
+        inserirItemHistorico(disciplina, mediaFinal, periodoCorrente);
+    }
 
     public void inserirItemHistorico(
             Disciplina disciplina, float mediaFinal, Periodo periodo) {
@@ -126,17 +147,6 @@ public class Aluno {
         if (mediaFinal >= Siguinha.MEDIA_MINIMA_PARA_APROVACAO) {
             this.creditosAcumulados += disciplina.getCreditos();
         }
-
-        // atualizar CRA:
-
-//        float numerador = 0;
-//        float denominador = 0;
-//        for (ItemHistorico itemHistorico : this.historico) {
-//            int creditos = itemHistorico.disciplinaCursada.getCreditos();
-//            numerador += itemHistorico.mediaFinal * creditos;
-//            denominador += creditos;
-//        }
-//        this.cra = numerador / denominador;
 
         // outro jeito de atualizar o CRA (melhor performance)
         this.numeradorCra += mediaFinal * disciplina.getCreditos();
@@ -179,6 +189,20 @@ public class Aluno {
         return dre == aluno.dre &&
                 Objects.equals(nome, aluno.getNome());
     }
+
+//    @Override
+//    public String toString() {  // override (assinatura idêntica)
+//        return String.format("%s (DRE: %d)", nome, dre);
+//    }
+//
+//    public String toString(int maxLength) {   // overload (sobrecarga)
+//        String toStringSemLimite = toString();
+//        return toStringSemLimite.substring(0, maxLength);
+//    }
+//
+//    public String toString(char separador) {  // overload
+//        return String.format("%s%c%d", nome, separador, dre);
+//    }
 
     // inner class (classe auxiliar, visível apenas de dentro da classe Aluno)
     private class ItemHistorico {

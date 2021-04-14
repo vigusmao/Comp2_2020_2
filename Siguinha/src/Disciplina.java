@@ -1,3 +1,5 @@
+import sun.misc.Queue;
+
 public class Disciplina {
 
     private String nome;
@@ -29,6 +31,7 @@ public class Disciplina {
     }
 
     public String getCodigo() {
+        Queue q = new Queue();
         return codigo;
     }
 }
