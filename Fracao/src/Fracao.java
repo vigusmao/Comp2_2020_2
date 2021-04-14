@@ -35,8 +35,6 @@ public class Fracao {
 
         this.sinal = Math.signum(numerador) == Math.signum(denominador) ||
                 numerador == 0;
-
-        obterFracaoGeratriz();
     }
 
     /**
@@ -84,6 +82,10 @@ public class Fracao {
      *         esta própria fração (this), se ela já for irredutível
      */
     public Fracao getFracaoGeratriz() {
+        if (fracaoGeratriz == null) {
+            obterFracaoGeratriz();  // lazy instantiation
+        }
+
         return fracaoGeratriz;
     }
 
