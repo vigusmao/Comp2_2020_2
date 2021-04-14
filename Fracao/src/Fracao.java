@@ -1,8 +1,20 @@
+import java.util.Objects;
+
 /**
  * Representa uma fração de forma explícita, guardando numerador e denominador inteiros.
  * Frações equivalentes (matematicamente) devem ser consideradas equals().
  */
 public class Fracao {
+
+    public static final String SEPARADOR = "/";
+
+    private final int numerador;  // sempre não-negativo
+
+    private final int denominador;  // sempre positivo
+
+    private final boolean sinal;  // true, para positiva ou nula; false, para negativa
+
+    private Fracao fracaoGeratriz;
 
     /**
      * Cria uma fração, baseada em seu numerador e denominador.
@@ -18,7 +30,13 @@ public class Fracao {
             throw new ArithmeticException("Denominador não pode ser zero!!");
         }
 
-        // ToDo: IMPLEMENT ME!!!!
+        this.numerador = Math.abs(numerador);
+        this.denominador = numerador == 0 ? 1 : Math.abs(denominador);
+
+        this.sinal = Math.signum(numerador) == Math.signum(denominador) ||
+                numerador == 0;
+
+        obterFracaoGeratriz();
     }
 
     /**
@@ -28,7 +46,7 @@ public class Fracao {
      *         false, se for negativa.
      */
     public boolean getSinal() {
-        return false;  // ToDo: IMPLEMENT ME!!!!
+        return sinal;
     }
 
     /**
@@ -36,7 +54,7 @@ public class Fracao {
      * @return o numerador
      */
     public int getNumerador() {
-        return 0;  // ToDo: IMPLEMENT ME!!!!
+        return numerador;
     }
 
     /**
@@ -44,7 +62,7 @@ public class Fracao {
      * @return o numerador
      */
     public int getDenominador() {
-        return 0;  // ToDo: IMPLEMENT ME!!!!
+        return denominador;
     }
 
     /**
@@ -54,7 +72,8 @@ public class Fracao {
      *         Ex.: -1/3 vai retornar 0.33333333
      */
     public float getValorNumerico() {
-        return 0;  // ToDo: IMPLEMENT ME!!!!
+        float valorAbsoluto = numerador / (float) denominador;
+        return sinal ? valorAbsoluto : -valorAbsoluto;
     }
 
     /**
@@ -65,11 +84,50 @@ public class Fracao {
      *         esta própria fração (this), se ela já for irredutível
      */
     public Fracao getFracaoGeratriz() {
-        return null;  // ToDo: IMPLEMENT ME!!!!
+        return fracaoGeratriz;
+    }
+
+    private void obterFracaoGeratriz() {
+        if (numerador == 0) {
+            this.fracaoGeratriz = this;
+            return;
+        }
+
+        int mdc = AritmeticaUtils.mdc(numerador, denominador);
+
+        if (mdc == 1) {
+            this.fracaoGeratriz = this;
+            return;
+        }
+
+        this.fracaoGeratriz = new Fracao(
+                numerador / mdc * (sinal ? 1 : -1),
+                denominador / mdc);
     }
 
     @Override
     public String toString() {
-        return "";  // ToDo: IMPLEMENT ME!!!!
+        if (numerador == 0) {
+            return "0";
+        }
+
+        return String.format("%s%d%s",
+                !this.sinal ? "-" : "",
+                numerador,
+                denominador != 1 ? SEPARADOR + denominador : "");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fracao outraFracao = (Fracao) o;
+
+        Fracao minhaFracaoGeratriz = getFracaoGeratriz();
+        Fracao outraFracaoGeratriz = outraFracao.getFracaoGeratriz();
+
+        return minhaFracaoGeratriz.getNumerador() == outraFracaoGeratriz.getNumerador() &&
+                minhaFracaoGeratriz.getDenominador() == outraFracaoGeratriz.getDenominador() &&
+                minhaFracaoGeratriz.getSinal() == outraFracaoGeratriz.getSinal();
     }
 }

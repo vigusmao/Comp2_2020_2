@@ -75,6 +75,15 @@ public class FracaoTest {
 
     @Test
     public void testarIgualdadeSemantica() {
-        assertEquals(new Fracao(2, 10), new Fracao(-1, -5));
+        String msg = "Dois objetos Fracao são considerados iguais " +
+                "quando representam o mesmo elemento do conjunto Q";
+        assertEquals(msg, new Fracao(1, 5), new Fracao(1, 5));
+        assertEquals(msg, new Fracao(1, 5), new Fracao(-1, -5));
+        assertEquals(msg, new Fracao(2, 10), new Fracao(1, 5));
+        assertEquals(msg, new Fracao(2, 10), new Fracao(-1, -5));
+        assertEquals(msg, new Fracao(-2, 10), new Fracao(-1, 5));
+        assertEquals(msg, new Fracao(2, -10), new Fracao(1, -5));
+        assertEquals(msg, new Fracao(2, -10), new Fracao(-1, 5));
+        assertEquals(msg, new Fracao(0, 1), new Fracao(0, 2));
     }
 }
