@@ -1,4 +1,5 @@
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.text.DecimalFormat;
@@ -20,11 +21,15 @@ public class LojaTest {
     private Livro guinessBook;
     private Brinquedo cuboMagico;
 
-    @Before
+    @Before  // roda antes de cada teste...
     public void setUp() {
 //        loja = new Loja();  // quebraria, porque implementamos o padrão singleton (c/ construtor privado)
+        loja = new LojaNaoSingletonParaTeste();  // quebraria, porque implementamos o padrão singleton (c/ construtor privado)
 
-        loja = Loja.getInstanciaUnica();
+        // outra forma de fazer, usando ainda o singleton...
+//        loja = Loja.getInstanciaUnica();
+//        loja.inicializar();  // apenas para limpar o estado do singleton
+
         comprador = new Usuario("Fulano", 123456, "Rua XYZ, 100");
         loja.cadastrarUsuario(comprador);
 
@@ -45,6 +50,7 @@ public class LojaTest {
         assertEquals("O estoque deve ser atualizado após cada venda",
                 106, loja.informarQuantidadeEmEstoque(guinessBook));
     }
+
     @Test
     public void testarVendaParaUsuarioNaoCadastrado() {
         loja.incluirProduto(guinessBook, 100);
@@ -87,5 +93,12 @@ public class LojaTest {
         loja.incluirProduto(guinessBook, 1);
         loja.incluirProduto(cuboMagico, 5);
         // não é preciso asserts, apenas está aqui para ver que isso precisa compilar corretamente
+    }
+
+    private class LojaNaoSingletonParaTeste extends Loja {
+
+        public LojaNaoSingletonParaTeste() {
+            super();
+        }
     }
 }

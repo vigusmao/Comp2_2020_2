@@ -13,12 +13,16 @@ public class Loja {
         System.out.println("Estou subindo a classe Loja...");
     }
 
-    private Loja() {
+    protected Loja() {
         // escrevo código normalmente para o construtor
     }
 
     public static Loja getInstanciaUnica() {
         return instanciaUnica;
+    }
+
+    public void limparEstado() {
+        // recria os atributos, ou os limpa...
     }
 
     /**

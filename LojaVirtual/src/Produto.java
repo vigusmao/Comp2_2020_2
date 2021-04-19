@@ -1,5 +1,7 @@
 public class Produto {
 
+    private int quantidadeEmEstoque = -1;
+
     public Produto(String descricao, String urlDaImagem) {
         // ToDo IMPLEMENT ME!!!
     }
