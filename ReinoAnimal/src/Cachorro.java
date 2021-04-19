@@ -1,6 +1,7 @@
-public class Cachorro extends Mamifero {
+public abstract class Cachorro extends Mamifero {
 
     public Cachorro() {
+//        super();  // o compilador acrescentaria essa linha automaticamente!
         super("Canídeo");
     }
 
@@ -10,16 +11,13 @@ public class Cachorro extends Mamifero {
         System.out.println("Roendo osso...");
     }
 
-    public void latir(int volumeEmDecibeis) {
-        System.out.println("Latindo a " + volumeEmDecibeis + "decibéis...");
-    }
-
-    @Override
-    public void emitirSom() {
-        latir(20);
-    }
+    public abstract void latir(int volumeEmDecibeis);
 
     public void pular() {
         System.out.println("Pulando...");
+    }
+
+    public String getRaca() {
+        return raca;
     }
 }

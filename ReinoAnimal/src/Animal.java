@@ -1,4 +1,6 @@
-public class Animal {
+import java.util.Date;
+
+public abstract class Animal {
 
     private String especie;
 
@@ -8,11 +10,12 @@ public class Animal {
 
     private String classe;
 
-    private int anoNascimento;
+    private Date dataDeNascimento;
 
     public Animal(String especie, String classe) {
         this.especie = especie;
         this.classe = classe;
+        nascer();
     }
 
     public void dormir() {
@@ -32,4 +35,11 @@ public class Animal {
     public String getEspecie() {
         return especie;
     }
+
+    protected void nascer() {
+        this.dataDeNascimento = new Date();
+        System.out.println("Nasci em " + this.dataDeNascimento);
+    }
+
+    public abstract void reproduzir();
 }

@@ -4,5 +4,9 @@ public class Zebra extends Mamifero {
         super("Zebra");
     }
 
+    @Override
+    public void emitirSom() {
+        System.out.println("Emitindo som de zebra...");
+    }
 
 }
