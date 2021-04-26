@@ -10,57 +10,47 @@ import java.util.List;
  */
 public class Loja {
 
-    private static final Loja instanciaUnica = new Loja();
+    private List<Produto> produtos;
+    private List<Integer> quantidades;
+    private List<Float> precos;
 
-    private List<Produto> estoque;
     private List<Usuario> usuarios;
 
     static {
         System.out.println("Estou subindo a classe Loja...");
     }
 
-    protected Loja() {
-        // escrevo código normalmente para o construtor
-        this.estoque = new ArrayList<>();
+    public Loja() {
+        this.produtos = new ArrayList<>();
+        this.quantidades = new ArrayList<>();
+        this.precos = new ArrayList<>();
+
         this.usuarios = new ArrayList<>();
     }
 
-    public static Loja getInstanciaUnica() {
-        return instanciaUnica;
-    }
-
-    public void limparEstado() {
-        // recria os atributos, ou os limpa...
-    }
-
     /**
-     * Inclui no estoque da loja a quantidade informado do produto.
+     * Inclui no produtos da loja a quantidade informado do produto.
      *
      * @param produto o produto a ser incluído
      * @param quantidadeAIncluir a quantidade que será acrescentada à quantidade existente.
      */
     public void incluirProduto(Produto produto, int quantidadeAIncluir) {
-        Produto produtoEmEstoque = obterProdutoEmEstoque(produto);
-        if (produtoEmEstoque != null) {
-            produtoEmEstoque.setQuantidadeEmEstoque(
-                    produtoEmEstoque.getQuantidadeEmEstoque() + quantidadeAIncluir);
+        int indice = obterIndiceProdutoEmEstoque(produto);
+
+        if (indice != -1) {  // produto já existe no estoque da loja
+            int novoValor = this.quantidades.get(indice) + quantidadeAIncluir;
+//            this.quantidades[indice] = novoValor;  // se fosse array
+            this.quantidades.set(indice, novoValor);
+
         } else {
-            this.estoque.add(produto);
-            produto.setQuantidadeEmEstoque(quantidadeAIncluir);
+            this.produtos.add(produto);
+            this.quantidades.add(quantidadeAIncluir);
+            this.precos.add(0f);
         }
     }
 
-    private Produto obterProdutoEmEstoque(Produto produto) {
-//        for (Produto produtoEmEstoque : this.estoque) {
-//            if (produtoEmEstoque.equals(produto)) {
-//                return produtoEmEstoque;
-//            }
-//        }
-//        return null;
-
-        int indice = this.estoque.indexOf(produto);
-        return indice != -1 ? this.estoque.get(indice) : null;
-
+    private int obterIndiceProdutoEmEstoque(Produto produto) {
+        return this.produtos.indexOf(produto);
     }
 
     public void cadastrarUsuario(Usuario usuario) {
@@ -93,7 +83,7 @@ public class Loja {
      * @param quantidadeDesejada a quantidade
      *
      * @return um Recibo indicando a venda feita, se o produto existia (em quantidade suficiente)
-     *         no estoque da loja; null, caso o usuário ou o produto sejam desconhecidos,
+     *         no produtos da loja; null, caso o usuário ou o produto sejam desconhecidos,
      *         ou não haja quantidade suficiente do produto desejado
      */
     public Recibo efetuarVenda(
@@ -105,17 +95,20 @@ public class Loja {
         }
 
         // existe o produto?
-        Produto produtoEmEstoque = obterProdutoEmEstoque(produto);
-        if (produtoEmEstoque == null ||
-                produtoEmEstoque.getQuantidadeEmEstoque() < quantidadeDesejada) {
+        int indiceProdutoEmEstoque = obterIndiceProdutoEmEstoque(produto);
+        if (indiceProdutoEmEstoque == -1) {
+            return null;  // não efetua a venda
+        }
+        int quantidadeEmEstoque = this.quantidades.get(indiceProdutoEmEstoque);
+        if (quantidadeEmEstoque < quantidadeDesejada) {
             return null;  // não efetua a venda
         }
 
         // vamos efetuar a venda
-        produtoEmEstoque.setQuantidadeEmEstoque(
-                produtoEmEstoque.getQuantidadeEmEstoque() - quantidadeDesejada);
+        int novaQuantidade = quantidadeEmEstoque - quantidadeDesejada;
+        this.quantidades.set(indiceProdutoEmEstoque, novaQuantidade);
 
-        Recibo recibo = new Recibo(quantidadeDesejada * produto.getPrecoEmReais(),
+        Recibo recibo = new Recibo(quantidadeDesejada * this.precos.get(indiceProdutoEmEstoque),
                 usuario, produto, quantidadeDesejada);
         return recibo;
 
@@ -124,12 +117,12 @@ public class Loja {
     /**
      * @param produto o produto a ser consultado
      *
-     * @return a quantidade em estoque;
+     * @return a quantidade em produtos;
      *         0 se não houver nenhuma unidade;
      *         -1 se o produto não é sequer vendido pela loja
      */
     public int informarQuantidadeEmEstoque(Produto produto) {
-        Produto produtoEmEstoque = obterProdutoEmEstoque(produto);
+        int indiceProdutoEmEstoque = obterIndiceProdutoEmEstoque(produto);
         if (produtoEmEstoque != null) {
             return produtoEmEstoque.getQuantidadeEmEstoque();
         }

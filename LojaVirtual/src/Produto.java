@@ -1,10 +1,9 @@
+import java.util.Objects;
+
 public class Produto {
 
     private String descricao;
-
-    private int quantidadeEmEstoque = -1;  // indica que o produto não é vendida
-
-    private float precoEmReais;
+    private int pesoEmGramas;
 
     public Produto(String descricao) {
         this.descricao = descricao;
@@ -18,39 +17,32 @@ public class Produto {
     }
 
     public int getPesoEmGramas() {
-        return 0;  // ToDo IMPLEMENT ME!!!
+        return this.pesoEmGramas;
     }
 
     public Dimensoes getDimensoes() {
         return null;  // ToDo IMPLEMENT ME!!!
     }
 
-    public float precoEmReais() {
-        return this.precoEmReais;
-    }
-
-    public float getPrecoEmReais() {
-        return this.precoEmReais;
-    }
-
-    public void setPrecoEmReais(float preco) {
-        this.precoEmReais = preco;
-    }
-
     public String getUrlDaImagem() {
         return null;  // ToDo IMPLEMENT ME!!!
-    }
-
-    int getQuantidadeEmEstoque() {
-        return this.quantidadeEmEstoque;
-    }
-
-    void setQuantidadeEmEstoque(int novaQuantidade) {
-        this.quantidadeEmEstoque = novaQuantidade;
     }
 
     @Override
     public String toString() {
         return this.descricao;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Produto produto = (Produto) o;
+        return Objects.equals(descricao, produto.descricao);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(descricao);
     }
 }
