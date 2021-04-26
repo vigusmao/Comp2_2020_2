@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Implementa uma loja virtual para produtos de qualquer tipo,
  * desde que tenham descrição, preço e dimensões.
@@ -9,12 +12,17 @@ public class Loja {
 
     private static final Loja instanciaUnica = new Loja();
 
+    private List<Produto> estoque;
+    private List<Usuario> usuarios;
+
     static {
         System.out.println("Estou subindo a classe Loja...");
     }
 
     protected Loja() {
         // escrevo código normalmente para o construtor
+        this.estoque = new ArrayList<>();
+        this.usuarios = new ArrayList<>();
     }
 
     public static Loja getInstanciaUnica() {
@@ -32,11 +40,50 @@ public class Loja {
      * @param quantidadeAIncluir a quantidade que será acrescentada à quantidade existente.
      */
     public void incluirProduto(Produto produto, int quantidadeAIncluir) {
-        // ToDo IMPLEMENT ME!!!
+        Produto produtoEmEstoque = obterProdutoEmEstoque(produto);
+        if (produtoEmEstoque != null) {
+            produtoEmEstoque.setQuantidadeEmEstoque(
+                    produtoEmEstoque.getQuantidadeEmEstoque() + quantidadeAIncluir);
+        } else {
+            this.estoque.add(produto);
+            produto.setQuantidadeEmEstoque(quantidadeAIncluir);
+        }
+    }
+
+    private Produto obterProdutoEmEstoque(Produto produto) {
+//        for (Produto produtoEmEstoque : this.estoque) {
+//            if (produtoEmEstoque.equals(produto)) {
+//                return produtoEmEstoque;
+//            }
+//        }
+//        return null;
+
+        int indice = this.estoque.indexOf(produto);
+        return indice != -1 ? this.estoque.get(indice) : null;
+
     }
 
     public void cadastrarUsuario(Usuario usuario) {
-        // ToDo IMPLEMENT ME!!!
+        Usuario usuarioJaCadastrado = obterUsuario(usuario.getCpf());
+        if (usuarioJaCadastrado != null) {
+            // nada a fazer, pois o usuário já está cadastrado
+            return;
+        }
+        this.usuarios.add(usuario);
+    }
+
+    private Usuario obterUsuario(Usuario usuario) {
+        int indice = this.usuarios.indexOf(usuario);
+        return indice != -1 ? this.usuarios.get(indice) : null;
+    }
+
+    private Usuario obterUsuario(long cpf) {
+        for (Usuario usuarioJaCadastrado : this.usuarios) {
+            if (usuarioJaCadastrado.getCpf() == cpf) {
+                return usuarioJaCadastrado;
+            }
+        }
+        return null;
     }
 
     /**
@@ -51,7 +98,27 @@ public class Loja {
      */
     public Recibo efetuarVenda(
             Produto produto, int quantidadeDesejada, Usuario usuario) {
-        return null;  // ToDo IMPLEMENT ME!!!
+
+        // conheço o usuário?
+        if (obterUsuario(usuario) == null) {  // não conheço!
+            return null;  // não efetua a venda
+        }
+
+        // existe o produto?
+        Produto produtoEmEstoque = obterProdutoEmEstoque(produto);
+        if (produtoEmEstoque == null ||
+                produtoEmEstoque.getQuantidadeEmEstoque() < quantidadeDesejada) {
+            return null;  // não efetua a venda
+        }
+
+        // vamos efetuar a venda
+        produtoEmEstoque.setQuantidadeEmEstoque(
+                produtoEmEstoque.getQuantidadeEmEstoque() - quantidadeDesejada);
+
+        Recibo recibo = new Recibo(quantidadeDesejada * produto.getPrecoEmReais(),
+                usuario, produto, quantidadeDesejada);
+        return recibo;
+
     }
 
     /**
@@ -62,6 +129,10 @@ public class Loja {
      *         -1 se o produto não é sequer vendido pela loja
      */
     public int informarQuantidadeEmEstoque(Produto produto) {
-        return 0;  // ToDo IMPLEMENT ME!!!
+        Produto produtoEmEstoque = obterProdutoEmEstoque(produto);
+        if (produtoEmEstoque != null) {
+            return produtoEmEstoque.getQuantidadeEmEstoque();
+        }
+        return -1;
     }
 }

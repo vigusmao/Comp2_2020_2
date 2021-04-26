@@ -1,5 +1,4 @@
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.text.DecimalFormat;
@@ -43,11 +42,14 @@ public class LojaTest {
     @Test
     public void testarInclusaoDeProdutoNoEstoque() {
         loja.incluirProduto(guinessBook, 100);
-        assertEquals("O estoque deve ser atualizado após cada venda",
+        assertEquals("O estoque deve refletir a quantidade correta do produto",
                 100, loja.informarQuantidadeEmEstoque(guinessBook));
 
+//        Livro outroObjetoRepresentandoOMesmoLivro = new Livro(
+//                guinessBook.getNome(), guinessBook.getEditora());
+
         loja.incluirProduto(guinessBook, 6);
-        assertEquals("O estoque deve ser atualizado após cada venda",
+        assertEquals("O estoque deve ser atualizado após cada inclusão",
                 106, loja.informarQuantidadeEmEstoque(guinessBook));
     }
 

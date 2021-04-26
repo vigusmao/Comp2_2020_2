@@ -1,7 +1,12 @@
 public class Livro extends Produto {
 
+    private String nome;
+    private String editora;
+
     public Livro(String nome, String editora) {
-        // ToDo IMPLEMENT ME!!!!
+        super(formatarDescricaoLivro(nome, editora));
+        this.nome = nome;
+        this.editora = editora;
     }
 
     private int numeroDePaginas() {
@@ -18,5 +23,30 @@ public class Livro extends Produto {
 
     public int getAnoDePublicacao() {
         return 0;  // ToDo IMPLEMENT ME!!!!
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEditora() {
+        return editora;
+    }
+
+    public void setEditora(String editora) {
+        this.editora = editora;
+    }
+
+    private static String formatarDescricaoLivro(String nome, String editora) {
+        return String.format("Livro: %s (editora: %s)", nome, editora);
+    }
+
+    @Override
+    public String toString() {
+        return "Livro: " + this.nome;
     }
 }

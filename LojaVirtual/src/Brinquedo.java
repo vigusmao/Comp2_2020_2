@@ -1,7 +1,7 @@
 public class Brinquedo extends Produto {
 
     public Brinquedo(String descricao) {
-        // ToDo IMPLEMENT ME!!!
+        super(descricao);
     }
 
     public String getMarca() {
