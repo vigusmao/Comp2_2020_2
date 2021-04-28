@@ -12,9 +12,7 @@ public class Loja {
 
     private static final float PRECO_DEFAULT = 1.99f;
 
-    private List<Produto> produtos;
-    private List<Integer> quantidades;
-    private List<Float> precos;
+    private List<InfoProduto> infoProdutos;
 
     private List<Usuario> usuarios;
 
@@ -23,10 +21,7 @@ public class Loja {
     }
 
     public Loja() {
-        this.produtos = new ArrayList<>();
-        this.quantidades = new ArrayList<>();
-        this.precos = new ArrayList<>();
-
+        this.infoProdutos = new ArrayList<>();
         this.usuarios = new ArrayList<>();
     }
 
@@ -37,32 +32,31 @@ public class Loja {
      * @param quantidadeAIncluir a quantidade que será acrescentada à quantidade existente.
      */
     public void incluirProduto(Produto produto, int quantidadeAIncluir) {
-        int indice = obterIndiceProdutoEmEstoque(produto);
+        InfoProduto infoProduto = obterInfoProduto(produto);
 
-        if (indice != -1) {  // produto já existe no estoque da loja
-            int novoValor = this.quantidades.get(indice) + quantidadeAIncluir;
-//            this.quantidades[indice] = novoValor;  // se fosse array
-            this.quantidades.set(indice, novoValor);
+        if (infoProduto != null) {  // produto já existe no estoque da loja
+            infoProduto.quantidade += quantidadeAIncluir;
 
         } else {
-            this.produtos.add(produto);
-            this.quantidades.add(quantidadeAIncluir);
-            this.precos.add(PRECO_DEFAULT);
+            infoProduto = new InfoProduto(produto, quantidadeAIncluir, PRECO_DEFAULT);
+            this.infoProdutos.add(infoProduto);
         }
     }
 
     public void atribuirPreco(Produto produto, float novoPreco) {
-        int indice = obterIndiceProdutoEmEstoque(produto);
-
-        if (indice == -1) {
-            return;  // não vou atribuir preço algum -- o produto não existe!
+        InfoProduto infoProduto = obterInfoProduto(produto);
+        if (infoProduto != null) {
+            infoProduto.preco = novoPreco;
         }
-
-        this.precos.set(indice, novoPreco);
     }
 
-    private int obterIndiceProdutoEmEstoque(Produto produto) {
-        return this.produtos.indexOf(produto);  // pra funcionar, preciso do override no equals()
+    private InfoProduto obterInfoProduto(Produto produtoASerConsultado) {
+        for (InfoProduto infoProduto : this.infoProdutos) {
+            if (infoProduto.produto.equals(produtoASerConsultado)) {
+                return infoProduto;
+            }
+        }
+        return null;
     }
 
     public void cadastrarUsuario(Usuario usuario) {
@@ -112,20 +106,18 @@ public class Loja {
         }
 
         // existe o produto?
-        int indiceProdutoEmEstoque = obterIndiceProdutoEmEstoque(produto);
-        if (indiceProdutoEmEstoque == -1) {
+        InfoProduto infoProduto = obterInfoProduto(produto);
+        if (infoProduto == null) {
             return null;  // não efetua a venda
         }
-        int quantidadeEmEstoque = this.quantidades.get(indiceProdutoEmEstoque);
-        if (quantidadeEmEstoque < quantidadeDesejada) {
+        if (infoProduto.quantidade < quantidadeDesejada) {
             return null;  // não efetua a venda
         }
 
         // vamos efetuar a venda
-        int novaQuantidade = quantidadeEmEstoque - quantidadeDesejada;
-        this.quantidades.set(indiceProdutoEmEstoque, novaQuantidade);
+        infoProduto.quantidade -= quantidadeDesejada;
 
-        Recibo recibo = new Recibo(quantidadeDesejada * this.precos.get(indiceProdutoEmEstoque),
+        Recibo recibo = new Recibo(quantidadeDesejada * infoProduto.preco,
                 usuario, produto, quantidadeDesejada);
         return recibo;
 
@@ -139,7 +131,19 @@ public class Loja {
      *         -1 se o produto não é sequer vendido pela loja
      */
     public int informarQuantidadeEmEstoque(Produto produto) {
-        int indiceProdutoEmEstoque = obterIndiceProdutoEmEstoque(produto);
-        return indiceProdutoEmEstoque != -1 ? this.quantidades.get(indiceProdutoEmEstoque) : -1;
+        InfoProduto infoProduto = obterInfoProduto(produto);
+        return infoProduto != null ? infoProduto.quantidade : -1;
+    }
+
+    private class InfoProduto {
+        Produto produto;
+        float preco;
+        int quantidade;
+
+        InfoProduto(Produto produto, int quantidade, float preco) {
+            this.produto = produto;
+            this.preco = preco;
+            this.quantidade = quantidade;
+        }
     }
 }
