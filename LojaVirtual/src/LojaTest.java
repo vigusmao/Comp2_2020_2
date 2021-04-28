@@ -31,15 +31,14 @@ public class LojaTest {
         loja2.cadastrarUsuario(comprador);
 
         guinessBook = new Livro("Guiness Book Of Records", "Editora Abril");
-        guinessBook.setPrecoEmReais(50);
-
         cuboMagico = new Brinquedo("Cubo Mágico");
-        cuboMagico.setPrecoEmReais(12.50f);
     }
 
     @Test
     public void testarInclusaoDeProdutoNoEstoque() {
         loja1.incluirProduto(guinessBook, 100);
+        loja1.atribuirPreco(guinessBook, 50);
+
         assertEquals("O estoque deve refletir a quantidade correta do produto",
                 100, loja1.informarQuantidadeEmEstoque(guinessBook));
 
@@ -80,17 +79,36 @@ public class LojaTest {
     @Test
     public void testarVendaBemSucedida() {
         loja1.incluirProduto(guinessBook, 100);
+        loja1.atribuirPreco(guinessBook, 50);
 
-        Recibo recibo = loja1.efetuarVenda(guinessBook, 5, comprador);
+        loja2.incluirProduto(guinessBook, 20);
+        loja2.atribuirPreco(guinessBook, 45);
+
+        verificarVendaBemSucedida(loja1, guinessBook, 5, 250, 95);
+        verificarVendaBemSucedida(loja2, guinessBook, 3, 135, 17);
+    }
+
+    private void verificarVendaBemSucedida(Loja loja, Produto produto, int quantidadeComprada,
+                                           int valorEsperadoDaCompra, int quantidadeEsperadaNoEstoquePosVenda) {
+        Recibo recibo = loja.efetuarVenda(produto, quantidadeComprada, comprador);
         assertNotNull(recibo);
         assertEquals(comprador, recibo.getUsuario());
-        assertEquals(250, recibo.getValorTotalDaCompra(), FLOAT_DELTA);
-        assertEquals("Recibo no valor de R$250" + sep + "00 para Fulano " +
-                        "referente à compra de 5 unidades de Livro: Guiness Book Of Records",
+        assertEquals(valorEsperadoDaCompra, recibo.getValorTotalDaCompra(), FLOAT_DELTA);
+        assertEquals("Recibo no valor de R$" + valorEsperadoDaCompra + sep + "00 para Fulano " +
+                        "referente à compra de " + quantidadeComprada + " unidades de " + produto.toString(),
                 recibo.toString());
-
         assertEquals("O estoque deve ser atualizado após cada venda",
-                95, loja1.informarQuantidadeEmEstoque(guinessBook));
+                quantidadeEsperadaNoEstoquePosVenda, loja.informarQuantidadeEmEstoque(produto));
+    }
+
+    @Test
+    public void testarVendaComQuantidadeInformadaNegativa() {
+        loja1.incluirProduto(guinessBook, 100);
+
+        Recibo recibo = loja1.efetuarVenda(guinessBook, -1, comprador);
+        assertNull(recibo);
+        assertEquals("O estoque não deve ser alterado após venda inválida",
+                100, loja1.informarQuantidadeEmEstoque(guinessBook));
     }
 
     @Test

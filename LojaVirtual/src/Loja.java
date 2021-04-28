@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class Loja {
 
+    private static final float PRECO_DEFAULT = 1.99f;
+
     private List<Produto> produtos;
     private List<Integer> quantidades;
     private List<Float> precos;
@@ -45,12 +47,22 @@ public class Loja {
         } else {
             this.produtos.add(produto);
             this.quantidades.add(quantidadeAIncluir);
-            this.precos.add(0f);
+            this.precos.add(PRECO_DEFAULT);
         }
     }
 
+    public void atribuirPreco(Produto produto, float novoPreco) {
+        int indice = obterIndiceProdutoEmEstoque(produto);
+
+        if (indice == -1) {
+            return;  // não vou atribuir preço algum -- o produto não existe!
+        }
+
+        this.precos.set(indice, novoPreco);
+    }
+
     private int obterIndiceProdutoEmEstoque(Produto produto) {
-        return this.produtos.indexOf(produto);
+        return this.produtos.indexOf(produto);  // pra funcionar, preciso do override no equals()
     }
 
     public void cadastrarUsuario(Usuario usuario) {
@@ -89,6 +101,11 @@ public class Loja {
     public Recibo efetuarVenda(
             Produto produto, int quantidadeDesejada, Usuario usuario) {
 
+        // a quantidade desejada é positiva?
+        if (quantidadeDesejada < 1) {
+            return null;
+        }
+
         // conheço o usuário?
         if (obterUsuario(usuario) == null) {  // não conheço!
             return null;  // não efetua a venda
@@ -123,9 +140,6 @@ public class Loja {
      */
     public int informarQuantidadeEmEstoque(Produto produto) {
         int indiceProdutoEmEstoque = obterIndiceProdutoEmEstoque(produto);
-        if (produtoEmEstoque != null) {
-            return produtoEmEstoque.getQuantidadeEmEstoque();
-        }
-        return -1;
+        return indiceProdutoEmEstoque != -1 ? this.quantidades.get(indiceProdutoEmEstoque) : -1;
     }
 }
