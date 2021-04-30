@@ -133,13 +133,13 @@ public class LojaTest {
 
     @Test
     public void testarPerformance() {
-        int QUANT_PRODUTOS = 1_000_000;
+        int QUANT_PRODUTOS = 100_000;
 
         System.out.println("Incluindo " + QUANT_PRODUTOS + " produtos...");
         long inicio = System.currentTimeMillis();
         for (int i = 1; i <= QUANT_PRODUTOS; i++) {
             Produto novoProduto = new Produto("Produto " + i);
-            loja1.incluirProduto(novoProduto, 1);
+            loja1.incluirProduto(novoProduto, 2);
         }
         long duracao = System.currentTimeMillis() - inicio;
         System.out.printf("\nDuração = %.3fs\n\n", duracao / 1000f);

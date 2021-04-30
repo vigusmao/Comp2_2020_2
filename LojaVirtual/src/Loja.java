@@ -36,13 +36,14 @@ public class Loja {
 
         if (infoProduto != null) {
             // produto já existe no estoque da loja
-//            infoProduto.quantidade += quantidadeAIncluir;
+            infoProduto.quantidade += quantidadeAIncluir;
 //  se precisássemos, por alguma razão, criar outro OBJETO, aí sim precisaríamos
 //  atualizar o mapa, fazendo com que aquela chave apontasse para o novo objeto
 //
-            infoProduto = new InfoProduto(produto,
-                    infoProduto.quantidade + quantidadeAIncluir, PRECO_DEFAULT);
-            this.infoProdutos.put(produto, infoProduto);
+//            infoProduto = new InfoProduto(produto,
+//                    infoProduto.quantidade + quantidadeAIncluir, PRECO_DEFAULT);
+//            this.infoProdutos.put(produto, infoProduto);
+//            this.infoProdutos.add(infoProduto);
 
         } else {
             // produto não existe ainda, vamos incluir
