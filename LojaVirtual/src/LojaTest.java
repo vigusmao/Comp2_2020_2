@@ -130,4 +130,31 @@ public class LojaTest {
         loja1.incluirProduto(cuboMagico, 5);
         // não é preciso asserts, apenas está aqui para ver que isso precisa compilar corretamente
     }
+
+    @Test
+    public void testarPerformance() {
+        int QUANT_PRODUTOS = 1_000_000;
+
+        System.out.println("Incluindo " + QUANT_PRODUTOS + " produtos...");
+        long inicio = System.currentTimeMillis();
+        for (int i = 1; i <= QUANT_PRODUTOS; i++) {
+            Produto novoProduto = new Produto("Produto " + i);
+            loja1.incluirProduto(novoProduto, 1);
+        }
+        long duracao = System.currentTimeMillis() - inicio;
+        System.out.printf("\nDuração = %.3fs\n\n", duracao / 1000f);
+
+        System.out.println("Buscando produtos...");
+        inicio = System.currentTimeMillis();
+        int contTotalEstoque = 0;
+        for (int i = 1; i <= QUANT_PRODUTOS; i++) {
+            Produto produtoASerConsultado = new Produto("Produto " + i);
+
+            contTotalEstoque += loja1.informarQuantidadeEmEstoque(
+                    produtoASerConsultado);
+        }
+        duracao = System.currentTimeMillis() - inicio;
+        System.out.printf("\nDuração = %.3fs\n", duracao / 1000f);
+        System.out.printf("\nTotal em estoque = %d", contTotalEstoque);
+    }
 }
