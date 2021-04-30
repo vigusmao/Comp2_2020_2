@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implementa uma loja virtual para produtos de qualquer tipo,
@@ -12,17 +12,17 @@ public class Loja {
 
     private static final float PRECO_DEFAULT = 1.99f;
 
-    private List<InfoProduto> infoProdutos;
+    private Map<Produto, InfoProduto> infoProdutos;
 
-    private List<Usuario> usuarios;
+    private Map<Long, Usuario> usuarioByCpf;  // Map<Chave, Valor> valorByChave
 
     static {
         System.out.println("Estou subindo a classe Loja...");
     }
 
     public Loja() {
-        this.infoProdutos = new ArrayList<>();
-        this.usuarios = new ArrayList<>();
+        this.infoProdutos = new HashMap<>();
+        this.usuarioByCpf = new HashMap<>();
     }
 
     /**
@@ -34,12 +34,14 @@ public class Loja {
     public void incluirProduto(Produto produto, int quantidadeAIncluir) {
         InfoProduto infoProduto = obterInfoProduto(produto);
 
-        if (infoProduto != null) {  // produto já existe no estoque da loja
+        if (infoProduto != null) {
+            // produto já existe no estoque da loja
             infoProduto.quantidade += quantidadeAIncluir;
 
         } else {
+            // produto não existe ainda, vamos incluir
             infoProduto = new InfoProduto(produto, quantidadeAIncluir, PRECO_DEFAULT);
-            this.infoProdutos.add(infoProduto);
+            this.infoProdutos.put(produto, infoProduto);
         }
     }
 
@@ -51,35 +53,25 @@ public class Loja {
     }
 
     private InfoProduto obterInfoProduto(Produto produtoASerConsultado) {
-        for (InfoProduto infoProduto : this.infoProdutos) {
-            if (infoProduto.produto.equals(produtoASerConsultado)) {
-                return infoProduto;
-            }
-        }
-        return null;
+        return this.infoProdutos.get(produtoASerConsultado);
     }
 
     public void cadastrarUsuario(Usuario usuario) {
-        Usuario usuarioJaCadastrado = obterUsuario(usuario.getCpf());
+        final long cpf = usuario.getCpf();
+        Usuario usuarioJaCadastrado = obterUsuario(cpf);
         if (usuarioJaCadastrado != null) {
             // nada a fazer, pois o usuário já está cadastrado
             return;
         }
-        this.usuarios.add(usuario);
+        this.usuarioByCpf.put(cpf, usuario);
     }
 
     private Usuario obterUsuario(Usuario usuario) {
-        int indice = this.usuarios.indexOf(usuario);
-        return indice != -1 ? this.usuarios.get(indice) : null;
+        return obterUsuario(usuario.getCpf());
     }
 
     private Usuario obterUsuario(long cpf) {
-        for (Usuario usuarioJaCadastrado : this.usuarios) {
-            if (usuarioJaCadastrado.getCpf() == cpf) {
-                return usuarioJaCadastrado;
-            }
-        }
-        return null;
+        return this.usuarioByCpf.get(cpf);
     }
 
     /**
@@ -139,6 +131,8 @@ public class Loja {
         Produto produto;
         float preco;
         int quantidade;
+        int vendasEfetuadas;
+        int avaliacaoDoProduto;
 
         InfoProduto(Produto produto, int quantidade, float preco) {
             this.produto = produto;
