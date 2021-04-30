@@ -1,4 +1,6 @@
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Siguinha {
 
@@ -40,13 +42,30 @@ public class Siguinha {
     // apenas para escrever testes rápidos, por ora
     public static void main(String[] args) {
 
-        System.out.println("Ano corrente = " + obterPeriodoCorrente());
+        HashMap<Integer, String> numerosPorExtenso = new HashMap<>();
+        numerosPorExtenso.put(1, "um");
+        numerosPorExtenso.put(2, "dois");
+        numerosPorExtenso.put(3, "três");
+        numerosPorExtenso.put(4, "quatro");
 
-        Disciplina calculo1 = new Disciplina("Cálculo 1", 6, "MAA323");
+        System.out.println(numerosPorExtenso.get(2));
+        System.out.println(numerosPorExtenso.get(600));
 
-        MonitorDeDisciplina fulano;
-        fulano = new MonitorDeDisciplina();//1234, "Fulano de Tal", calculo1);
+        // formar de iterar pelo mapa
+        for (Integer chave : numerosPorExtenso.keySet()) {
+            System.out.println(chave);
+        }
 
-        System.out.println("Aluno: " + fulano);  // fulano.toString() será chamado automaticamente
+        // formar de iterar pelo mapa
+        for (String valor : numerosPorExtenso.values()) {
+            System.out.println(valor);
+        }
+
+        for (Map.Entry<Integer, String> parChaveValor : numerosPorExtenso.entrySet()) {
+            Integer chave = parChaveValor.getKey();
+            String valor = parChaveValor.getValue();
+            System.out.println(chave + " ---> " + valor);
+        }
+
     }
 }
