@@ -2,13 +2,13 @@ public class Recibo {
 
     private float valorTotal;
     private Usuario usuario;
-    private Produto produto;
+    private Vendavel vendavel;
     private int quantidade;
 
-    public Recibo(float valorTotal, Usuario usuario, Produto produto, int quantidade) {
+    public Recibo(float valorTotal, Usuario usuario, Vendavel vendavel, int quantidade) {
         this.valorTotal = valorTotal;
         this.usuario = usuario;
-        this.produto = produto;
+        this.vendavel = vendavel;
         this.quantidade = quantidade;
     }
 
@@ -25,7 +25,7 @@ public class Recibo {
         return String.format("Recibo no valor de R$%.2f para %s " +
                 "referente à compra de %d unidades de %s",
                 this.valorTotal, usuario.getNome(), this.quantidade,
-                this.produto.toString());
+                this.vendavel.getDescricao());
 
 
     }

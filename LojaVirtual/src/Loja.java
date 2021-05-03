@@ -1,8 +1,9 @@
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementa uma loja virtual para produtos de qualquer tipo,
+ * Implementa uma loja virtual para vendavels de qualquer tipo,
  * desde que tenham descrição, preço e dimensões.
  *
  * Essa classe será um singleton, isto é, permitiremos apenas
@@ -10,57 +11,61 @@ import java.util.Map;
  */
 public class Loja {
 
-    private static final float PRECO_DEFAULT = 1.99f;
+    static final float PRECO_DEFAULT = 1.99f;
 
-    private Map<Produto, InfoProduto> infoProdutos;
+    private Map<Vendavel, InfoVendavel> infoVendaveis;
 
     private Map<Long, Usuario> usuarioByCpf;  // Map<Chave, Valor> valorByChave
+
+    private Transportador entregador;
+
 
     static {
         System.out.println("Estou subindo a classe Loja...");
     }
 
-    public Loja() {
-        this.infoProdutos = new HashMap<>();
-        this.usuarioByCpf = new HashMap<>();
+    public Loja(Transportador entregador) {
+        this.infoVendaveis = new HashMap<>();  // composição
+        this.usuarioByCpf = new HashMap<>();   // composição
+        this.entregador = entregador;  // agregação
     }
 
     /**
-     * Inclui no produtos da loja a quantidade informado do produto.
+     * Inclui no vendavels da loja a quantidade informado do vendavel.
      *
-     * @param produto o produto a ser incluído
+     * @param vendavel o vendavel a ser incluído
      * @param quantidadeAIncluir a quantidade que será acrescentada à quantidade existente.
      */
-    public void incluirProduto(Produto produto, int quantidadeAIncluir) {
-        InfoProduto infoProduto = obterInfoProduto(produto);
+    public void incluirVendavel(Vendavel vendavel, int quantidadeAIncluir) {
+        InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
 
-        if (infoProduto != null) {
-            // produto já existe no estoque da loja
-            infoProduto.quantidade += quantidadeAIncluir;
+        if (infoVendavel != null) {
+            // vendavel já existe no estoque da loja
+            infoVendavel.quantidade += quantidadeAIncluir;
 //  se precisássemos, por alguma razão, criar outro OBJETO, aí sim precisaríamos
 //  atualizar o mapa, fazendo com que aquela chave apontasse para o novo objeto
 //
-//            infoProduto = new InfoProduto(produto,
-//                    infoProduto.quantidade + quantidadeAIncluir, PRECO_DEFAULT);
-//            this.infoProdutos.put(produto, infoProduto);
-//            this.infoProdutos.add(infoProduto);
+//            infoVendavel = new InfoVendavel(vendavel,
+//                    infoVendavel.quantidade + quantidadeAIncluir, PRECO_DEFAULT);
+//            this.infoVendaveis.put(vendavel, infoVendavel);
+//            this.infoVendaveis.add(infoVendavel);
 
         } else {
-            // produto não existe ainda, vamos incluir
-            infoProduto = new InfoProduto(produto, quantidadeAIncluir, PRECO_DEFAULT);
-            this.infoProdutos.put(produto, infoProduto);
+            // vendavel não existe ainda, vamos incluir
+            infoVendavel = new InfoVendavel(vendavel, quantidadeAIncluir, PRECO_DEFAULT);
+            this.infoVendaveis.put(vendavel, infoVendavel);
         }
     }
 
-    public void atribuirPreco(Produto produto, float novoPreco) {
-        InfoProduto infoProduto = obterInfoProduto(produto);
-        if (infoProduto != null) {
-            infoProduto.preco = novoPreco;
+    public void atribuirPreco(Vendavel vendavel, float novoPreco) {
+        InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
+        if (infoVendavel != null) {
+            infoVendavel.preco = novoPreco;
         }
     }
 
-    private InfoProduto obterInfoProduto(Produto produtoASerConsultado) {
-        return this.infoProdutos.get(produtoASerConsultado);
+    private InfoVendavel obterInfoVendavel(Vendavel vendavelASerConsultado) {
+        return this.infoVendaveis.get(vendavelASerConsultado);
     }
 
     public void cadastrarUsuario(Usuario usuario) {
@@ -82,17 +87,17 @@ public class Loja {
     }
 
     /**
-     * Efetua a venda do produto desejado na quantidade especificada.
+     * Efetua a venda do vendavel desejado na quantidade especificada.
      *
-     * @param produto o produto
+     * @param vendavel o vendavel
      * @param quantidadeDesejada a quantidade
      *
-     * @return um Recibo indicando a venda feita, se o produto existia (em quantidade suficiente)
-     *         no produtos da loja; null, caso o usuário ou o produto sejam desconhecidos,
-     *         ou não haja quantidade suficiente do produto desejado
+     * @return um Recibo indicando a venda feita, se o vendavel existia (em quantidade suficiente)
+     *         no vendavels da loja; null, caso o usuário ou o vendavel sejam desconhecidos,
+     *         ou não haja quantidade suficiente do vendavel desejado
      */
     public Recibo efetuarVenda(
-            Produto produto, int quantidadeDesejada, Usuario usuario) {
+            Vendavel vendavel, int quantidadeDesejada, Usuario usuario) {
 
         // a quantidade desejada é positiva?
         if (quantidadeDesejada < 1) {
@@ -104,45 +109,64 @@ public class Loja {
             return null;  // não efetua a venda
         }
 
-        // existe o produto?
-        InfoProduto infoProduto = obterInfoProduto(produto);
-        if (infoProduto == null) {
+        // existe o vendavel?
+        InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
+        if (infoVendavel == null) {
             return null;  // não efetua a venda
         }
-        if (infoProduto.quantidade < quantidadeDesejada) {
+        if (infoVendavel.quantidade < quantidadeDesejada) {
             return null;  // não efetua a venda
         }
 
         // vamos efetuar a venda
-        infoProduto.quantidade -= quantidadeDesejada;
+        infoVendavel.quantidade -= quantidadeDesejada;
 
-        Recibo recibo = new Recibo(quantidadeDesejada * infoProduto.preco,
-                usuario, produto, quantidadeDesejada);
+        // solicita a entrega
+        if (vendavel instanceof Produto) {
+            this.entregador.transportar((Produto) vendavel, usuario.getEndereco());
+        }
+
+        Recibo recibo = new Recibo(quantidadeDesejada * infoVendavel.preco,
+                usuario, vendavel, quantidadeDesejada);
         return recibo;
-
     }
 
     /**
-     * @param produto o produto a ser consultado
+     * @param vendavel o vendavel a ser consultado
      *
-     * @return a quantidade em produtos;
+     * @return a quantidade em vendavels;
      *         0 se não houver nenhuma unidade;
-     *         -1 se o produto não é sequer vendido pela loja
+     *         -1 se o vendavel não é sequer vendido pela loja
      */
-    public int informarQuantidadeEmEstoque(Produto produto) {
-        InfoProduto infoProduto = obterInfoProduto(produto);
-        return infoProduto != null ? infoProduto.quantidade : -1;
+    public int informarQuantidadeEmEstoque(Vendavel vendavel) {
+        InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
+        return infoVendavel != null ? infoVendavel.quantidade : -1;
     }
 
-    private class InfoProduto {
-        Produto produto;
+    public void listarTodosOsItens() {
+        for (InfoVendavel infoVendavel : this.infoVendaveis.values()) {
+            Vendavel vendavel = infoVendavel.vendavel;
+            String descricao = vendavel.getDescricao();
+            Image imagem = obterImagemDaRede(vendavel.getUrlDaImagem());
+            float preco = infoVendavel.preco;
+            // ToDo exibir a descrição do item com sua imagem e seu preço nesta loja
+        }
+    }
+
+    private Image obterImagemDaRede(String url) {
+        // ToDo...
+        return null;
+    }
+
+    private class InfoVendavel {
+        Vendavel vendavel;
         float preco;
         int quantidade;
         int vendasEfetuadas;
-        int avaliacaoDoProduto;
+        int avaliacaoDoVendavel;
 
-        InfoProduto(Produto produto, int quantidade, float preco) {
-            this.produto = produto;
+        InfoVendavel(Vendavel vendavel, int quantidade, float preco) {
+            this.vendavel = vendavel;
             this.preco = preco;
             this.quantidade = quantidade;
         }

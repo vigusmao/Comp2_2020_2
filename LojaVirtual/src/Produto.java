@@ -1,9 +1,14 @@
+import java.awt.*;
 import java.util.Objects;
 
-public class Produto {
+public class Produto implements Vendavel, Transportavel {
 
     private String descricao;
     private int pesoEmGramas;
+    private Dimensoes dimensoes;
+    private String urlDaImagem;
+    private Image codigoDeBarras;
+    private int anoDeFabricacao;
 
     public Produto(String descricao) {
         this.descricao = descricao;
