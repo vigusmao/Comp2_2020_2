@@ -1,13 +1,11 @@
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Aluno {
+public class Aluno extends Pessoa {
 
     // --------------------------------
     // atributos
     // --------------------------------
-
-    private String nome;
 
     private final long dre;
 
@@ -25,8 +23,6 @@ public class Aluno {
 
     private ArrayList<ItemHistorico> historico;
 
-    private int anoNascimento;
-
     public final static int TAMANHO_MAXIMO_DO_NOME = 30;
 
     // --------------------------------
@@ -39,11 +35,9 @@ public class Aluno {
 
     public Aluno(long dre, String nome) {
 
-//        super();  // esta linha é acrescentada automaticamente pelo compilador,
-//                  // se nós não chamarmos explicitamente o construtor da superclasse
+        super(nome);
 
         this.dre = dre;
-        this.nome = nome;
 
         this.historico = new ArrayList<>();  // com <>, o compilador substitui por <ItemHistorico>
 
@@ -56,21 +50,13 @@ public class Aluno {
         this.creditosAcumulados = 0;  // idem para int
     }
 
-//    public Aluno() {
-//        super();
-//    }
-
-    public String getNome() {
-        return nome;
-    }
-
+    @Override
     public void setNome(String nome) {
         if (nome.length() > TAMANHO_MAXIMO_DO_NOME) {
             // ToDo: lançar uma exceção!!!
             return;
         }
-
-        this.nome = nome;
+        super.setNome(nome);
     }
 
     public float getCra() {
@@ -83,14 +69,6 @@ public class Aluno {
 
     public long getDre() {
         return dre;
-    }
-
-    public int getAnoNascimento() {
-        return anoNascimento;
-    }
-
-    public int getIdade() {
-        return Siguinha.obterAnoCorrente() - anoNascimento;
     }
 
     // ATENÇÃO: NÃO QUEREMOS UM SETTER PÚBLICO PARA O CRA!!!!!!
@@ -155,7 +133,7 @@ public class Aluno {
     }
 
     public String getHistoricoParaImpressao() {
-        String resultado = "Aluno(a): " + this.nome +
+        String resultado = "Aluno(a): " + getNome() +
                 " (DRE: " + this.dre + ")\n";
         for (int i = 0; i < this.historico.size(); i++) {
             ItemHistorico itemHistorico = this.historico.get(i);
@@ -186,8 +164,7 @@ public class Aluno {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Aluno aluno = (Aluno) o;
-        return dre == aluno.dre &&
-                Objects.equals(nome, aluno.getNome());
+        return dre == aluno.dre;
     }
 
 //    @Override

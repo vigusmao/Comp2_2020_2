@@ -10,6 +10,15 @@ public class Siguinha {
 
     String instituicaoDeEnsino;
 
+    Map<Long, Aluno> alunoByDre;
+
+
+
+    public Siguinha(String instituicaoDeEnsino) {
+        this.instituicaoDeEnsino = instituicaoDeEnsino;
+        this.alunoByDre = new HashMap<>();
+    }
+
     public static int obterAnoCorrente() {
         return Calendar.getInstance().get(Calendar.YEAR);
     }
@@ -39,33 +48,45 @@ public class Siguinha {
         return periodoCorrente;
     }
 
+    public String getInstituicaoDeEnsino() {
+        return instituicaoDeEnsino;
+    }
+
+    public void setInstituicaoDeEnsino(String instituicaoDeEnsino) {
+        this.instituicaoDeEnsino = instituicaoDeEnsino;
+    }
+
+    public void cadastrarAluno(long dre, String nome) {
+        Aluno aluno = this.alunoByDre.get(dre);
+        if (aluno == null) {
+            aluno = new Aluno(dre, nome);
+            this.alunoByDre.put(dre, aluno);
+        } else {
+            // já existia no cadastro, então apenas atualiza o nome
+            aluno.setNome(nome);
+        }
+    }
+
+    public Aluno obterAluno(long dre) {
+        return this.alunoByDre.get(dre);
+    }
+
+    public void abrirTurma(Disciplina disciplina, Professor professor) {
+        Turma turma = new Turma(disciplina, obterPeriodoCorrente());
+        // ToDo adicionar a nova turma numa coleção de turmas
+    }
+
+    public void inscreverAlunoEmTurma(long dre, Turma turma) {
+        Aluno aluno = this.alunoByDre.get(dre);
+        if (aluno == null) {
+            // ToDo lançaria exceção!
+            return;
+        }
+        turma.inscreverAluno(aluno);
+    }
+
     // apenas para escrever testes rápidos, por ora
     public static void main(String[] args) {
-
-        HashMap<Integer, String> numerosPorExtenso = new HashMap<>();
-        numerosPorExtenso.put(1, "um");
-        numerosPorExtenso.put(2, "dois");
-        numerosPorExtenso.put(3, "três");
-        numerosPorExtenso.put(4, "quatro");
-
-        System.out.println(numerosPorExtenso.get(2));
-        System.out.println(numerosPorExtenso.get(600));
-
-        // formar de iterar pelo mapa
-        for (Integer chave : numerosPorExtenso.keySet()) {
-            System.out.println(chave);
-        }
-
-        // formar de iterar pelo mapa
-        for (String valor : numerosPorExtenso.values()) {
-            System.out.println(valor);
-        }
-
-        for (Map.Entry<Integer, String> parChaveValor : numerosPorExtenso.entrySet()) {
-            Integer chave = parChaveValor.getKey();
-            String valor = parChaveValor.getValue();
-            System.out.println(chave + " ---> " + valor);
-        }
 
     }
 }
