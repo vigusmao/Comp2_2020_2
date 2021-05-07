@@ -1,0 +1,51 @@
+1) Implementar o CalculadorIntersecaoIngenuo
+
+2) Escrever unit tests para a classe Usuario, testando o método que
+   retorna o tamanho da interseção de amigos.
+
+3) Esse unit test deve criar usuarios com diferentes calculadores de interseção,
+   para podermos comparar a performance.
+
+4) Escreva um teste de performance, onde seus usuários terão um número muito
+   grande de amigos. Observe a diferença nos tempos dependendo do
+   tipo do CalculaodrIntersecao utilizado.
+
+
+---------------------------------------
+
+
+5) Num outro projeto, cria uma função
+
+     void encontrarPar(List<Integer> lista, int k)
+
+que imprime no console (via System.out.print...)
+um par de números da lista, se existir, cuja SOMA é k
+
+Ex.: lista = { 1, 5, -10, 56, 44, 12, 18 }, k = 34
+     Saída: -10, 44
+
+
+Obs.: Pense numa maneira "esperta" de fazer isso.
+
+
+---------------------------------------
+
+
+6) Num outro projeto, crie uma função
+
+    void encontrarCaracterMaisFrequente(String string)
+
+que imprime no console (via System.out.print...)
+o caracter mais frequente na String fornecida com o número de ocorrências.
+
+Ex.: string = "arara"
+     Saída: a, 3
+
+Dica: para iterar por caracteres de um String, pode fazer como abaixo:
+        String palavra = "blah";
+        for (int i = 0; i < palavra.length(); i++) {
+            char caracter = palavra.charAt(i);
+            System.out.println(caracter);
+        }
+
+Obs.: Pense numa maneira "esperta" de fazer isso.
