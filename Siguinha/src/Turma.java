@@ -3,21 +3,20 @@ import java.util.Map;
 
 public class Turma {
 
+    public static final float MEDIA_NAO_INFORMADA = -1;
+
     private final Disciplina disciplina;
 
     private final Periodo periodo;
 
     private Professor professor;
 
-    private Map<Long, Aluno> alunoByDre;
-
-    private Map<Long, Float> mediaByDre;
+    private Map<Aluno, Float> mediaByAluno;
 
     public Turma(Disciplina disciplina, Periodo periodo) {
         this.disciplina = disciplina;
         this.periodo = periodo;
-        this.alunoByDre = new HashMap<>();
-        this.mediaByDre = new HashMap<>();
+        this.mediaByAluno = new HashMap<>();
     }
 
     public Disciplina getDisciplina() {
@@ -37,20 +36,24 @@ public class Turma {
     }
 
     void inscreverAluno(Aluno aluno) {
-        this.alunoByDre.put(aluno.getDre(), aluno);
+        this.mediaByAluno.put(aluno, MEDIA_NAO_INFORMADA);
     }
 
-    public void atribuirMediaFinal(long dre, float nota) {
-        if (this.alunoByDre.get(dre) == null) {
+    public void atribuirMediaFinal(Aluno aluno, float nota) {
+        if (this.mediaByAluno.get(aluno) == null) {
             // o aluno não está inscrito na turma!
             // ToDo lançaria exceção
             return;
         }
-        this.mediaByDre.put(dre, nota);
+        this.mediaByAluno.put(aluno, nota);
     }
 
-    public float obterMediaFinal(long dre) {
-        return this.mediaByDre.get(dre);
+    public float obterMediaFinal(Aluno aluno) {
+        Float media = this.mediaByAluno.get(aluno);
+        if (media == null) {
+            // ToDo lançaria exceção pois o aluno sequer pertence à turma
+        }
+        return media;
     }
 
     public String listarAlunos() {
@@ -64,14 +67,15 @@ public class Turma {
 //        return resultado;
 
         StringBuilder sb = new StringBuilder();
-        for (Aluno aluno : this.alunoByDre.values()) {
-            long dre = aluno.getDre();
+        for (Map.Entry<Aluno, Float> chaveValor : this.mediaByAluno.entrySet()) {
+            Aluno aluno = chaveValor.getKey();
+            float media = chaveValor.getValue();
             sb.append("\n")
-                    .append(dre)
+                    .append(aluno.getDre())
                     .append(" - ")
                     .append(aluno.getNome())
                     .append(" - ")
-                    .append(this.mediaByDre.get(dre));
+                    .append(media);
         }
         return sb.toString();
     }

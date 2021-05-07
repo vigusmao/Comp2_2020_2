@@ -167,6 +167,12 @@ public class Aluno extends Pessoa {
         return dre == aluno.dre;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(dre);
+    }
+
+
 //    @Override
 //    public String toString() {  // override (assinatura idêntica)
 //        return String.format("%s (DRE: %d)", nome, dre);
