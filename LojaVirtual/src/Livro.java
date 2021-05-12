@@ -1,4 +1,4 @@
-public class Livro extends Produto {
+public class Livro extends Produto implements LivroOuBrinquedo {
 
     private String nome;
     private String editora;

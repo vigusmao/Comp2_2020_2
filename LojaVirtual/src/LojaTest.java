@@ -15,8 +15,8 @@ public class LojaTest {
     private static DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
     private static char sep = symbols.getDecimalSeparator();
 
-    private Loja loja1;
-    private Loja loja2;
+    private Loja<Vendavel> loja1;
+    private Loja<Vendavel> loja2;
     private Caminhao caminhao;
     private ServicoEntregas servicoEntregas;
     private Usuario comprador;
@@ -28,8 +28,8 @@ public class LojaTest {
         caminhao = new Caminhao("Scania", "Jamanta", 2000);
         servicoEntregas = new ServicoEntregas();
 
-        loja1 = new Loja(servicoEntregas);
-        loja2 = new Loja(caminhao);
+        loja1 = new Loja<>(servicoEntregas);
+        loja2 = new Loja<>(caminhao);
 
         comprador = new Usuario("Fulano", 123456, "Rua XYZ, 100");
         loja1.cadastrarUsuario(comprador);
@@ -171,5 +171,40 @@ public class LojaTest {
         duracao = System.currentTimeMillis() - inicio;
         System.out.printf("\nDuração = %.3fs\n", duracao / 1000f);
         System.out.printf("\nTotal em estoque = %d", contTotalEstoque);
+    }
+
+    @Test
+    public void testartLojaQueVendoAlgoEspecifico() {
+        Loja<Livro> livraria = new Loja<>(caminhao);  // queremos que seja uma loja EXCLUSIVA para Livros
+
+        // eu gostaria que as linhas abaixo SEQUER COMPILASSEM!!!!!!
+//        livraria.incluirVendavel(cuboMagico, 50);
+//        livraria.incluirVendavel(caminhao, 2);
+
+        // eu gostaria que a linha abaixo COMPILASSE direitinho, sem necessidade de typecast
+        Livro livroDaLoja = livraria.obterItem("O Pequeno Príncipe");
+        assertEquals(1882, livroDaLoja.getAnoDePublicacao());
+
+
+
+
+        Loja<Brinquedo> lojaDeBrinquedos = new Loja<>(caminhao);
+
+        // eu gostaria que as linhas abaixo SEQUER COMPILASSEM!!!!!!
+//        lojaDeBrinquedos.incluirVendavel(guinessBook, 2);
+//        lojaDeBrinquedos.incluirVendavel(caminhao, 50);
+
+        // eu gostaria que a linha abaixo COMPILASSE direitinho, sem necessidade de typecast
+        Brinquedo brinquedoDaLoja = lojaDeBrinquedos.obterItem("Cubo Mágico");
+        assertEquals(6, brinquedoDaLoja.getIdadeMinimaRecomendada());
+
+
+
+
+        Loja<LivroOuBrinquedo> lojaDeLivroOuBrinquedo  = new Loja<>(caminhao);
+        lojaDeLivroOuBrinquedo.incluirVendavel(guinessBook, 30);
+        lojaDeLivroOuBrinquedo.incluirVendavel(cuboMagico, 10);
+
+        Brinquedo brinquedo = (Brinquedo) lojaDeLivroOuBrinquedo.obterItem("Cubo Mágico");
     }
 }

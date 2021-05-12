@@ -1,21 +1,24 @@
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Implementa uma loja virtual para vendavels de qualquer tipo,
+ * Implementa uma loja virtual para qualquer tipo de Vendavel,
  * desde que tenham descrição, preço e dimensões.
  *
  * Essa classe será um singleton, isto é, permitiremos apenas
  * uma instância desde objeto no sistema.
  */
-public class Loja {
+public class Loja<T extends Vendavel> {  // SEMPRE extends
 
     static final float PRECO_DEFAULT = 1.99f;
 
-    private Map<Vendavel, InfoVendavel> infoVendaveis;
+    private Map<T, InfoVendavel> infoByVendavel;
 
     private Map<Long, Usuario> usuarioByCpf;  // Map<Chave, Valor> valorByChave
+
+    private Set<T> produtosEmPromocao;
 
     private Transportador entregador;
 
@@ -25,7 +28,7 @@ public class Loja {
     }
 
     public Loja(Transportador entregador) {
-        this.infoVendaveis = new HashMap<>();  // composição
+        this.infoByVendavel = new HashMap<>();  // composição
         this.usuarioByCpf = new HashMap<>();   // composição
         this.entregador = entregador;  // agregação
     }
@@ -36,7 +39,7 @@ public class Loja {
      * @param vendavel o vendavel a ser incluído
      * @param quantidadeAIncluir a quantidade que será acrescentada à quantidade existente.
      */
-    public void incluirVendavel(Vendavel vendavel, int quantidadeAIncluir) {
+    public void incluirVendavel(T vendavel, int quantidadeAIncluir) {
         InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
 
         if (infoVendavel != null) {
@@ -47,25 +50,25 @@ public class Loja {
 //
 //            infoVendavel = new InfoVendavel(vendavel,
 //                    infoVendavel.quantidade + quantidadeAIncluir, PRECO_DEFAULT);
-//            this.infoVendaveis.put(vendavel, infoVendavel);
-//            this.infoVendaveis.add(infoVendavel);
+//            this.infoByVendavel.put(vendavel, infoVendavel);
+//            this.infoByVendavel.add(infoVendavel);
 
         } else {
             // vendavel não existe ainda, vamos incluir
             infoVendavel = new InfoVendavel(vendavel, quantidadeAIncluir, PRECO_DEFAULT);
-            this.infoVendaveis.put(vendavel, infoVendavel);
+            this.infoByVendavel.put(vendavel, infoVendavel);
         }
     }
 
-    public void atribuirPreco(Vendavel vendavel, float novoPreco) {
+    public void atribuirPreco(T vendavel, float novoPreco) {
         InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
         if (infoVendavel != null) {
             infoVendavel.preco = novoPreco;
         }
     }
 
-    private InfoVendavel obterInfoVendavel(Vendavel vendavelASerConsultado) {
-        return this.infoVendaveis.get(vendavelASerConsultado);
+    private InfoVendavel obterInfoVendavel(T vendavelASerConsultado) {
+        return this.infoByVendavel.get(vendavelASerConsultado);
     }
 
     public void cadastrarUsuario(Usuario usuario) {
@@ -97,7 +100,7 @@ public class Loja {
      *         ou não haja quantidade suficiente do vendavel desejado
      */
     public Recibo efetuarVenda(
-            Vendavel vendavel, int quantidadeDesejada, Usuario usuario) {
+            T vendavel, int quantidadeDesejada, Usuario usuario) {
 
         // a quantidade desejada é positiva?
         if (quantidadeDesejada < 1) {
@@ -138,14 +141,14 @@ public class Loja {
      *         0 se não houver nenhuma unidade;
      *         -1 se o vendavel não é sequer vendido pela loja
      */
-    public int informarQuantidadeEmEstoque(Vendavel vendavel) {
+    public int informarQuantidadeEmEstoque(T vendavel) {
         InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
         return infoVendavel != null ? infoVendavel.quantidade : -1;
     }
 
     public void listarTodosOsItens() {
-        for (InfoVendavel infoVendavel : this.infoVendaveis.values()) {
-            Vendavel vendavel = infoVendavel.vendavel;
+        for (InfoVendavel infoVendavel : this.infoByVendavel.values()) {
+            T vendavel = infoVendavel.vendavel;
             String descricao = vendavel.getDescricao();
             Image imagem = obterImagemDaRede(vendavel.getUrlDaImagem());
             float preco = infoVendavel.preco;
@@ -153,19 +156,30 @@ public class Loja {
         }
     }
 
+    public T obterItem(String descricao) {
+        for (T vendavel : this.infoByVendavel.keySet()) {
+            if (vendavel.getDescricao() != null &&
+                vendavel.getDescricao().equals(descricao)) {
+                return vendavel;
+            }
+        }
+        return null;
+    }
+
+
     private Image obterImagemDaRede(String url) {
         // ToDo...
         return null;
     }
 
     private class InfoVendavel {
-        Vendavel vendavel;
+        T vendavel;
         float preco;
         int quantidade;
         int vendasEfetuadas;
         int avaliacaoDoVendavel;
 
-        InfoVendavel(Vendavel vendavel, int quantidade, float preco) {
+        InfoVendavel(T vendavel, int quantidade, float preco) {
             this.vendavel = vendavel;
             this.preco = preco;
             this.quantidade = quantidade;

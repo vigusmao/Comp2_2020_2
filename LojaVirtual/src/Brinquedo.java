@@ -1,4 +1,4 @@
-public class Brinquedo extends Produto {
+public class Brinquedo extends Produto implements LivroOuBrinquedo {
 
     public Brinquedo(String descricao) {
         super(descricao);
