@@ -99,7 +99,8 @@ public class AlbumTest {
 
         albumFigurinhas.autoCompletar();
 
-        assertEquals("O álbum deve estar completo após uma chamada válida ao auto-completar",
+        assertEquals("O álbum deve estar completo após uma chamada válida ao auto-completar " +
+                        "(isto é, após o percentual mínimo de figurinhas já ter sido obtido)",
                 0, albumFigurinhas.getQuantItensFaltantes());  // álbum completo!
     }
 
