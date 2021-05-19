@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Usuario implements Comparable<Usuario> {
 
@@ -8,8 +10,14 @@ public class Usuario implements Comparable<Usuario> {
 
     private CalculadorIntersecao calculadorIntersecao;
 
-    public Usuario(int id, CalculadorIntersecao calculador) {
-        // instancia um calculador de interseção
+    public Usuario(int id) {
+        this.id = id;
+        this.calculadorIntersecao = new CalculadorIntersecaoEsperto();  // composição
+        this.amigos = new ArrayList<>();
+    }
+
+    public void setCalculadorIntersecao(CalculadorIntersecao calculador) {
+        this.calculadorIntersecao = calculador;
     }
 
     public int getId() {
@@ -18,6 +26,10 @@ public class Usuario implements Comparable<Usuario> {
 
     public List<Usuario> getAmigos() {
         return this.amigos;
+    }
+
+    public void adicionarAmigo(Usuario usuario2) {
+        amigos.add(usuario2);
     }
 
     /**
@@ -34,5 +46,18 @@ public class Usuario implements Comparable<Usuario> {
     @Override
     public int compareTo(Usuario o) {
         return this.id - o.id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return id == usuario.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

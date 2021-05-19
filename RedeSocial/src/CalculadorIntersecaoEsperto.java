@@ -7,7 +7,7 @@ public class CalculadorIntersecaoEsperto implements CalculadorIntersecao {
     @Override
     public List<Usuario> obterIntersecao(List<Usuario> lista1, List<Usuario> lista2) {
 
-        HashSet<Usuario> conjunto = new HashSet<>();
+        HashSet<Usuario> conjunto = new HashSet<>(lista1.size());
 
         List<Usuario> intersecao = new ArrayList<>();
 
