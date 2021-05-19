@@ -1,3 +1,5 @@
+package modelo.produto;
+
 public class Brinquedo extends Produto implements LivroOuBrinquedo {
 
     public Brinquedo(String descricao) {

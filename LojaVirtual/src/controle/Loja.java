@@ -1,10 +1,17 @@
+package controle;
+
+import modelo.Usuario;
+import modelo.produto.Produto;
+import util.Transportador;
+import util.Vendavel;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Implementa uma loja virtual para qualquer tipo de Vendavel,
+ * Implementa uma loja virtual para qualquer tipo de util.Vendavel,
  * desde que tenham descrição, preço e dimensões.
  *
  * Essa classe será um singleton, isto é, permitiremos apenas
@@ -12,7 +19,7 @@ import java.util.Set;
  */
 public class Loja<T extends Vendavel> {  // SEMPRE extends
 
-    static final float PRECO_DEFAULT = 1.99f;
+    public static final float PRECO_DEFAULT = 1.99f;
 
     private Map<T, InfoVendavel> infoByVendavel;
 
@@ -24,7 +31,7 @@ public class Loja<T extends Vendavel> {  // SEMPRE extends
 
 
     static {
-        System.out.println("Estou subindo a classe Loja...");
+        System.out.println("Estou subindo a classe controle.Loja...");
     }
 
     public Loja(Transportador entregador) {
@@ -95,7 +102,7 @@ public class Loja<T extends Vendavel> {  // SEMPRE extends
      * @param vendavel o vendavel
      * @param quantidadeDesejada a quantidade
      *
-     * @return um Recibo indicando a venda feita, se o vendavel existia (em quantidade suficiente)
+     * @return um controle.Recibo indicando a venda feita, se o vendavel existia (em quantidade suficiente)
      *         no vendavels da loja; null, caso o usuário ou o vendavel sejam desconhecidos,
      *         ou não haja quantidade suficiente do vendavel desejado
      */

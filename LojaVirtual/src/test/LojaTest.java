@@ -1,5 +1,19 @@
+package test;
+
+import controle.Loja;
+import controle.Recibo;
+import modelo.Usuario;
+import modelo.produto.Brinquedo;
+import modelo.produto.Livro;
+import modelo.produto.LivroOuBrinquedo;
+import modelo.produto.Produto;
+import modelo.servico.Servico;
+import modelo.servico.ServicoEntregas;
+import modelo.servico.ServicoImpressao;
 import org.junit.Before;
 import org.junit.Test;
+import util.Caminhao;
+import util.Vendavel;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -108,7 +122,7 @@ public class LojaTest {
         assertNotNull(recibo);
         assertEquals(comprador, recibo.getUsuario());
         assertEquals(valorEsperadoDaCompra, recibo.getValorTotalDaCompra(), FLOAT_DELTA);
-        assertEquals(String.format("Recibo no valor de R$%.2f para Fulano " +
+        assertEquals(String.format("controle.Recibo no valor de R$%.2f para Fulano " +
                         "referente à compra de %d unidades de %s",
                 valorEsperadoDaCompra, quantidadeComprada, vendavel.getDescricao()),
                 recibo.toString());
@@ -153,7 +167,7 @@ public class LojaTest {
         System.out.println("Incluindo " + QUANT_VENDAVELS + " vendavels...");
         long inicio = System.currentTimeMillis();
         for (int i = 1; i <= QUANT_VENDAVELS; i++) {
-            Produto novoVendavel = new Produto("Produto " + i);
+            Produto novoVendavel = new Produto("modelo.produto.Produto " + i);
             loja1.incluirVendavel(novoVendavel, 2);
         }
         long duracao = System.currentTimeMillis() - inicio;
@@ -163,7 +177,7 @@ public class LojaTest {
         inicio = System.currentTimeMillis();
         int contTotalEstoque = 0;
         for (int i = 1; i <= QUANT_VENDAVELS; i++) {
-            Produto produtoASerConsultado = new Produto("Produto " + i);
+            Produto produtoASerConsultado = new Produto("modelo.produto.Produto " + i);
 
             contTotalEstoque += loja1.informarQuantidadeEmEstoque(
                     produtoASerConsultado);
@@ -181,12 +195,17 @@ public class LojaTest {
 //        livraria.incluirVendavel(cuboMagico, 50);
 //        livraria.incluirVendavel(caminhao, 2);
 
-        // eu gostaria que a linha abaixo COMPILASSE direitinho, sem necessidade de typecast
-        Livro livroDaLoja = livraria.obterItem("O Pequeno Príncipe");
+
+        String nome = "O Pequeno Príncipe";
+        String editora = "Editora Blah";
+        Livro livro = new Livro(nome, editora);
+        livro.setAnoPublicacao(1882);
+        livraria.incluirVendavel(livro, 10);
+        final String descricao = Livro.formatarDescricaoLivro(nome, editora);
+
+        // eu quero que a linha abaixo COMPILE direitinho, sem necessidade de typecast
+        Livro livroDaLoja = livraria.obterItem(descricao);
         assertEquals(1882, livroDaLoja.getAnoDePublicacao());
-
-
-
 
         Loja<Brinquedo> lojaDeBrinquedos = new Loja<>(caminhao);
 
@@ -194,12 +213,8 @@ public class LojaTest {
 //        lojaDeBrinquedos.incluirVendavel(guinessBook, 2);
 //        lojaDeBrinquedos.incluirVendavel(caminhao, 50);
 
-        // eu gostaria que a linha abaixo COMPILASSE direitinho, sem necessidade de typecast
+            // eu gostaria que a linha abaixo COMPILASSE direitinho, sem necessidade de typecast
         Brinquedo brinquedoDaLoja = lojaDeBrinquedos.obterItem("Cubo Mágico");
-        assertEquals(6, brinquedoDaLoja.getIdadeMinimaRecomendada());
-
-
-
 
         Loja<LivroOuBrinquedo> lojaDeLivroOuBrinquedo  = new Loja<>(caminhao);
         lojaDeLivroOuBrinquedo.incluirVendavel(guinessBook, 30);

@@ -7,10 +7,13 @@ public class Principal {
         PastorAlemao caozinho1 = (PastorAlemao) zoo.escolherCachorro("pastor");
 //        Cachorro caozinho1 = new PastorAlemao();
         Cachorro caozinho2 = zoo.escolherCachorro(null);
+        Mamifero mamiferoSorteado = zoo.sortearBicho();
 
         // vou pedir coisas que qualquer cahorro saberia fazer...
         caozinho1.pular();
         caozinho1.roerOsso();
+
+        mamiferoSorteado.emitirSom();
 
         // agora algo específico de pastor alemão...
         caozinho1.morderOInvasor();

@@ -1,3 +1,5 @@
+package util;
+
 public class Dimensoes {
 
     public int getComprimentoEmCentimetros() {

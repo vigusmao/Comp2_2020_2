@@ -1,3 +1,7 @@
+package modelo.servico;
+
+import util.Vendavel;
+
 public class ServicoImpressao extends Servico implements Vendavel {
 
     @Override

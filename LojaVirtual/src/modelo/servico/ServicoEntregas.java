@@ -1,3 +1,8 @@
+package modelo.servico;
+
+import util.Transportador;
+import util.Transportavel;
+
 public class ServicoEntregas extends Servico implements Transportador {
 
     @Override

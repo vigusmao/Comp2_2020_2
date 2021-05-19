@@ -1,3 +1,5 @@
+package util;
+
 public interface Transportavel {
 
     int getPesoEmGramas();

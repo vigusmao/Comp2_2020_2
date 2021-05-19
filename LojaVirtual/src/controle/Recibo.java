@@ -1,3 +1,8 @@
+package controle;
+
+import modelo.Usuario;
+import util.Vendavel;
+
 public class Recibo {
 
     private float valorTotal;
@@ -22,7 +27,7 @@ public class Recibo {
 
     @Override
     public String toString() {
-        return String.format("Recibo no valor de R$%.2f para %s " +
+        return String.format("controle.Recibo no valor de R$%.2f para %s " +
                 "referente à compra de %d unidades de %s",
                 this.valorTotal, usuario.getNome(), this.quantidade,
                 this.vendavel.getDescricao());

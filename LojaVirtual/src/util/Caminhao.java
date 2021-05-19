@@ -1,3 +1,9 @@
+package util;
+
+import modelo.produto.Produto;
+import util.Transportador;
+import util.Transportavel;
+
 public class Caminhao extends Produto implements Transportador {
 
     private String marca;

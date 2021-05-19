@@ -21,9 +21,10 @@ public class ZoologicoDeMamiferos {
         this.bichos.add(bicho);
     }
 
-    public Cachorro escolherCachorro(String tipo) {
-        switch (tipo) {
+    public Cachorro escolherCachorro(String raca) {
+        switch (raca.toLowerCase()) {
             case "pastor":
+            case "pastor alemao":
                 return new PastorAlemao();
             case "poodle":
                 return new Poodle();
@@ -32,4 +33,6 @@ public class ZoologicoDeMamiferos {
 //                return new ViraLata();
         }
     }
+
+
 }

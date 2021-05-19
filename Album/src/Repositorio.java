@@ -1,16 +1,18 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Repositorio {
+public class Repositorio<T extends Colecionavel> {
 
     private static final String PREFIXO_URL_IMAGENS = "http://www.nossoalbum.com.br/imagens/";
 
-    private List<Figurinha> todasAsFigurinhas;
+    private List<T> todasAsFigurinhas;
 
-    public Repositorio(String sufixoUrlImagens, int quantFigurinhas) {
+    @SuppressWarnings("unchecked")
+    public Repositorio(String sufixoUrlImagens, int quantFigurinhas, T objetoReferencia) {
         todasAsFigurinhas = new ArrayList<>(quantFigurinhas);
         for (int i = 1; i <= quantFigurinhas; i++) {
-            Figurinha fig = new Figurinha(i, PREFIXO_URL_IMAGENS + sufixoUrlImagens);
+            T fig = (T) ColecionavelFactory.create(
+                    objetoReferencia.getClass().getName(), i, PREFIXO_URL_IMAGENS + sufixoUrlImagens);
             todasAsFigurinhas.add(fig);
         }
     }

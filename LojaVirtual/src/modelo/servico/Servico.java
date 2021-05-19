@@ -1,3 +1,5 @@
+package modelo.servico;
+
 import java.util.Date;
 
 public class Servico {

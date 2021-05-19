@@ -1,6 +1,6 @@
 LAB 3:
 
-Faça os unit testes em LojaTest passarem,
+Faça os unit testes em test.LojaTest passarem,
 segundo o espírito do Test-Driven Development.
 
 PS.: Tente não modificar os testes!

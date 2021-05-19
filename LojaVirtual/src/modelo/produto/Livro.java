@@ -1,7 +1,10 @@
+package modelo.produto;
+
 public class Livro extends Produto implements LivroOuBrinquedo {
 
     private String nome;
     private String editora;
+    private int anoPublicacao;
 
     public Livro(String nome, String editora) {
         super(formatarDescricaoLivro(nome, editora));
@@ -22,7 +25,11 @@ public class Livro extends Produto implements LivroOuBrinquedo {
     }
 
     public int getAnoDePublicacao() {
-        return 0;  // ToDo IMPLEMENT ME!!!!
+        return anoPublicacao;
+    }
+
+    public void setAnoPublicacao(int anoPublicacao) {
+        this.anoPublicacao = anoPublicacao;
     }
 
     public String getNome() {
@@ -41,7 +48,7 @@ public class Livro extends Produto implements LivroOuBrinquedo {
         this.editora = editora;
     }
 
-    private static String formatarDescricaoLivro(String nome, String editora) {
+    public static String formatarDescricaoLivro(String nome, String editora) {
         return String.format("Livro: %s (editora: %s)", nome, editora);
     }
 

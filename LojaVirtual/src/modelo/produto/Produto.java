@@ -1,3 +1,9 @@
+package modelo.produto;
+
+import util.Transportavel;
+import util.Dimensoes;
+import util.Vendavel;
+
 import java.awt.*;
 import java.util.Objects;
 
