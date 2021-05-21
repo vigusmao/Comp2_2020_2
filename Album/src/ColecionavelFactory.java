@@ -1,6 +1,7 @@
 public class ColecionavelFactory {
 
-    public static Colecionavel create(String tipo, int posicao, String urlDaImagem) {
+    public static Colecionavel criarColecionavel(
+            String tipo, int posicao, String urlDaImagem) {
 
         switch (tipo.toLowerCase()) {
             case "figurinha":

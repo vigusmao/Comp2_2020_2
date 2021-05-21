@@ -13,7 +13,7 @@ public class AlbumTest {
 
     @Before  // roda antes de cada teste
     public void setUp() {
-        this.repositorioFigurinhas = new Repositorio("album_copa2014", TAMANHO_DO_ALBUM);
+        this.repositorioFigurinhas = new Repositorio("album_copa2014", TAMANHO_DO_ALBUM, "figurinha");
         this.albumFigurinhas = new Album(repositorioFigurinhas, ITENS_POR_PACOTE);
     }
 
@@ -107,13 +107,19 @@ public class AlbumTest {
     @Test
     public void testarGetItemColado() {
         popularAlbum(new int[] {1, 2, 3});
-        Figurinha figurinha = albumFigurinhas.getItemColado(2);
+        final Colecionavel itemColado = albumFigurinhas.getItemColado(2);
 
+        if (!(itemColado instanceof Figurinha)) {
+            fail("O item colado deveria ser uma Figurinha!!");
+        }
+
+        Figurinha figurinha = (Figurinha) itemColado;
         assertNotNull(figurinha);
 
         assertEquals(2, figurinha.getPosicao());
 
         assertNull(albumFigurinhas.getItemColado(4));
+
     }
 
     @Test
