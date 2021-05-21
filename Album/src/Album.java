@@ -4,23 +4,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Album {
+public class Album<T extends Colecionavel> {
 
     public static final int PERCENTUAL_MINIMO_PARA_AUTO_COMPLETAR = 90;
 
     public static final Image IMAGEM_PADRAO_PARA_POSICAO_VAZIA = null;
 
-    private final Repositorio repositorio;
+    private final Repositorio<T> repositorio;
     private final int quantItensPorPacotinho;
 
-    private List<Colecionavel> itensColados;  // direct addressing
+    private List<T> itensColados;  // direct addressing
     private int quantItensColados;
 
     // poderíamos fazer novamente direct addressing para as repetidas,
     // mas vamos usar um HashMap aqui só para treinarmos
     private Map<Integer, Integer> contRepetidasByPosicao;
 
-    public Album(Repositorio repositorio, int quantItensPorPacotinho) {
+    public Album(Repositorio<T> repositorio, int quantItensPorPacotinho) {
         this.repositorio = repositorio;
         this.quantItensPorPacotinho = quantItensPorPacotinho;
 
@@ -35,13 +35,14 @@ public class Album {
         this.contRepetidasByPosicao = new HashMap<>();
     }
 
-    public void receberNovoPacotinho(Pacotinho pacotinho) {
-        Colecionavel[] itensDoPacotinho = pacotinho.getItens();
+    public void receberNovoPacotinho(Pacotinho<T> pacotinho) {
+        T[] itensDoPacotinho = pacotinho.getItens();
         if (itensDoPacotinho.length != this.quantItensPorPacotinho) {
             return;  // melhor ainda: lançaria uma checked exception
         }
 
-        for (Colecionavel item : pacotinho.getItens()) {
+        for (T item : itensDoPacotinho) {
+
             final int posicao = item.getPosicao();
             if (possuiItemColado(posicao)) {
                 // adiciona como repetida
@@ -57,7 +58,7 @@ public class Album {
         }
     }
 
-    public Colecionavel getItemColado(int posicao) {
+    public T getItemColado(int posicao) {
         return posicao < 1 || posicao > getTamanho() ? null :
                 this.itensColados.get(posicao);
     }
@@ -94,13 +95,13 @@ public class Album {
 
         for (int i = 1; i <= getTamanho(); i++) {
             if (!possuiItemColado(i)) {
-                Colecionavel item = this.repositorio.getItem(i);
+                T item = this.repositorio.getItem(i);
                 colarItem(i, item);
             }
         }
     }
 
-    private void colarItem(int i, Colecionavel item) {
+    private void colarItem(int i, T item) {
         this.itensColados.set(i, item);
         this.quantItensColados++;
     }
