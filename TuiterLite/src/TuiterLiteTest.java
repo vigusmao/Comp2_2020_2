@@ -141,6 +141,15 @@ public class TuiterLiteTest {
     }
 
 //    @Test
+//    public void testarMultiplosSimbolosDeHashtag() {
+//        Tuite tuite = tuiterLite.tuitarAlgo(usuario, "###LAB7 ######LAB7");
+//        assertTrue("O número de caracteres # não deve importar",
+//                tuite.getHashtags().contains("#LAB7"));
+//        assertFalse("Para consulta, devemos usar sempre uma única #",
+//                tuite.getHashtags().contains("###LAB7"));
+//    }
+
+//    @Test
 //    public void testeTipoUsuario() throws TamanhoMaximoExcedidoException, UsuarioDesconhecidoException {
 //        // sanity check
 //        assertEquals("Um usuário sem nenhum tuite deve estar no nível INICIANTE",

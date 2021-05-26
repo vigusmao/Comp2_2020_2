@@ -143,5 +143,4 @@ public class AlbumTest {
         assertEquals(3, albumFig.getQuantItensColados());
         assertEquals(2, albumSelo.getQuantItensColados());
     }
-
 }
