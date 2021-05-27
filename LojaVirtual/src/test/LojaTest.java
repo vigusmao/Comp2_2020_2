@@ -2,6 +2,9 @@ package test;
 
 import controle.Loja;
 import controle.Recibo;
+import exception.EstoqueInsuficienteException;
+import exception.ItemInexisteNoCatalogoException;
+import exception.VendaException;
 import modelo.Usuario;
 import modelo.produto.Brinquedo;
 import modelo.produto.Livro;
@@ -93,12 +96,24 @@ public class LojaTest {
     public void testarVendaParaUsuarioNaoCadastrado() {
         loja1.incluirVendavel(guinessBook, 100);
         Usuario compradorDesconhecido = new Usuario("Fantasma", 222, "Blah");
-        assertNull("Apenas usuários cadastrados na loja1 podem comprar nela",
-                loja1.efetuarVenda(guinessBook, 5, compradorDesconhecido));
+
+        try {
+            Recibo recibo = loja1.efetuarVenda(guinessBook, 5, compradorDesconhecido);
+
+            assertNull("Apenas usuários cadastrados na loja1 podem comprar nela",
+                    recibo);
+
+        } catch (VendaException e) {
+            fail("Deu ruim! A venda não foi realizada!!!!!!!!");
+        }
+
+        // continua daqui
     }
 
     @Test
-    public void testarVendaBemSucedida() {
+    public void testarVendaBemSucedida()
+            throws EstoqueInsuficienteException, ItemInexisteNoCatalogoException {
+
         loja1.incluirVendavel(guinessBook, 100);
         loja1.atribuirPreco(guinessBook, 50);
 
@@ -117,7 +132,9 @@ public class LojaTest {
     }
 
     private void verificarVendaBemSucedida(Loja loja, Vendavel vendavel, int quantidadeComprada,
-                                           float valorEsperadoDaCompra, int quantidadeEsperadaNoEstoquePosVenda) {
+                                           float valorEsperadoDaCompra, int quantidadeEsperadaNoEstoquePosVenda)
+            throws EstoqueInsuficienteException, ItemInexisteNoCatalogoException {
+
         Recibo recibo = loja.efetuarVenda(vendavel, quantidadeComprada, comprador);
         assertNotNull(recibo);
         assertEquals(comprador, recibo.getUsuario());
@@ -131,26 +148,54 @@ public class LojaTest {
     }
 
     @Test
-    public void testarVendaComQuantidadeInformadaNegativa() {
+    public void testarVendaComQuantidadeInformadaNegativa()
+            throws EstoqueInsuficienteException, ItemInexisteNoCatalogoException {
+
         loja1.incluirVendavel(guinessBook, 100);
 
-        Recibo recibo = loja1.efetuarVenda(guinessBook, -1, comprador);
-        assertNull(recibo);
+        try {
+            loja1.efetuarVenda(guinessBook, -1, comprador);
+
+            fail("Uma RuntimeException deve ser lançada se a quantidade desejada for negativa");
+
+        } catch (RuntimeException e) {
+            // nada a se fazer; foi a exceção que esperávamos mesmo!
+        }
+
         assertEquals("O estoque não deve ser alterado após venda inválida",
                 100, loja1.informarQuantidadeEmEstoque(guinessBook));
+
     }
 
     @Test
-    public void testarVendaParaVendavelEmQuantidadeInsuficiente() {
+    public void testarVendaParaVendavelEmQuantidadeInsuficiente() throws ItemInexisteNoCatalogoException {
         loja1.incluirVendavel(guinessBook, 100);
-        assertNull("A venda não deve ser efetuada se não houver quantidade suficiente",
-                loja1.efetuarVenda(guinessBook, 101, comprador));
+
+
+        final Recibo recibo;
+
+        try {
+            recibo = loja1.efetuarVenda(guinessBook, 101, comprador);
+
+            fail("Uma EstoqueInsuficienteException deve ser lançada quando a " +
+                    "quantidade desejada for maior do que a quantidade em estoque");
+
+        } catch (EstoqueInsuficienteException e) {
+            // passe o teste por vacuidade, ou seja, chegando ao fim naturalmente
+        }
     }
 
     @Test
-    public void testarVendaParaVendavelQueNaoEhVendidoPelaLoja() {
-        assertNull("A venda não deve ser efetuada se a loja1 não trabalhar com aquele vendavel",
-                loja1.efetuarVenda(cuboMagico, 1, comprador));
+    public void testarVendaParaVendavelQueNaoEhVendidoPelaLoja()
+            throws EstoqueInsuficienteException {
+
+        try {
+            loja1.efetuarVenda(cuboMagico, 1, comprador);
+            fail("A venda não deve ser efetuada se a loja não trabalhar com aquele vendavel");
+
+        } catch (ItemInexisteNoCatalogoException e) {
+            // pass
+        }
     }
 
     @Test

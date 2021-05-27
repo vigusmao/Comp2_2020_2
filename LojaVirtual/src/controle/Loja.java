@@ -1,5 +1,7 @@
 package controle;
 
+import exception.EstoqueInsuficienteException;
+import exception.ItemInexisteNoCatalogoException;
 import modelo.Usuario;
 import modelo.produto.Produto;
 import util.Transportador;
@@ -103,29 +105,33 @@ public class Loja<T extends Vendavel> {  // SEMPRE extends
      * @param quantidadeDesejada a quantidade
      *
      * @return um controle.Recibo indicando a venda feita, se o vendavel existia (em quantidade suficiente)
-     *         no vendavels da loja; null, caso o usuário ou o vendavel sejam desconhecidos,
-     *         ou não haja quantidade suficiente do vendavel desejado
+     *         no vendavels da loja; null, caso o usuário seja desconhecido
+     *
+     * @throws EstoqueInsuficienteException se não houver o iteem quantidade suficiente para a venda
+     * @throws ItemInexisteNoCatalogoException se a loja sequer trabalhar com esse item
      */
     public Recibo efetuarVenda(
-            T vendavel, int quantidadeDesejada, Usuario usuario) {
+            T vendavel, int quantidadeDesejada, Usuario usuario) throws EstoqueInsuficienteException,
+                                                                        ItemInexisteNoCatalogoException {
 
         // a quantidade desejada é positiva?
         if (quantidadeDesejada < 1) {
-            return null;
+            throw new RuntimeException("Argumento inválido! Quantidade desejada precisa ser positiva!");
+            // situação onde há claramente um bug no chamador!!!!!!!!
         }
 
         // conheço o usuário?
         if (obterUsuario(usuario) == null) {  // não conheço!
-            return null;  // não efetua a venda
+            return null;  // não efetua a venda e retorna null (não é legal!!!!)
         }
 
         // existe o vendavel?
         InfoVendavel infoVendavel = obterInfoVendavel(vendavel);
         if (infoVendavel == null) {
-            return null;  // não efetua a venda
+            throw new ItemInexisteNoCatalogoException();  // não efetua a venda
         }
         if (infoVendavel.quantidade < quantidadeDesejada) {
-            return null;  // não efetua a venda
+            throw new EstoqueInsuficienteException();
         }
 
         // vamos efetuar a venda

@@ -76,11 +76,12 @@ public class Siguinha {
         // ToDo adicionar a nova turma numa coleção de turmas
     }
 
-    public void inscreverAlunoEmTurma(long dre, Turma turma) {
+    public void inscreverAlunoEmTurma(long dre, Turma turma)
+            throws DreDesconhecidoException {
+
         Aluno aluno = this.alunoByDre.get(dre);
         if (aluno == null) {
-            // ToDo lançaria exceção!
-            return;
+            throw new DreDesconhecidoException(dre);
         }
         turma.inscreverAluno(aluno);
     }
