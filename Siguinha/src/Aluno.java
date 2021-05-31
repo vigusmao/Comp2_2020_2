@@ -23,6 +23,13 @@ public class Aluno extends Pessoa {
 
     private ArrayList<ItemHistorico> historico;
 
+    /*
+     * Graduação
+     * Mestrado
+     * Doutorado
+     */
+    private String categoria;
+
     public final static int TAMANHO_MAXIMO_DO_NOME = 30;
 
     // --------------------------------
@@ -48,6 +55,31 @@ public class Aluno extends Pessoa {
         this.denominadorCra = 0;
 
         this.creditosAcumulados = 0;  // idem para int
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        switch (categoria.toLowerCase().replaceAll(" ", "")) {
+            case "doutorado":
+            case "d.sc.":
+                this.categoria = "Doutorado";
+                break;
+            case "mestrado":
+            case "m.sc.":
+                this.categoria = "Mestrado";
+                break;
+            case "graduacao":
+            case "graduação":
+                this.categoria = "Graduação";
+                break;
+            default:
+                throw new IllegalArgumentException("Categoria inválida!!");
+        }
+
+        this.categoria = categoria;
     }
 
     @Override
