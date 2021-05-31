@@ -29,4 +29,25 @@ public class SiguinhaTest {
             assertEquals(36523564, e.getDreDesconhecido());
         }
     }
+
+    @Test
+    public void testarCategoria() {
+        Aluno aluno = new Aluno(123456, "Fulano");
+        if (aluno.getCategoria() == TipoAluno.GRADUACAO) {
+            // faça algo com esse aluno de graduação
+        } else if (aluno.getCategoria() == TipoAluno.DOUTORADO) {
+            // faca algo com esse aluno de doutorado
+        } // etc.
+
+        switch (aluno.getCategoria()) {
+            case GRADUACAO:
+                // faça algo com esse aluno de graduação
+                break;
+            case DOUTORADO:
+                // faça algo com esse aluno de doutorado
+                break;
+            default:
+                // outros casos...
+        }
+    }
 }
