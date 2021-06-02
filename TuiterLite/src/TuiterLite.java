@@ -8,8 +8,10 @@ import java.util.*;
  *  As mensagens podem conter hashtags (palavras iniciadas por #), que são detectadas automaticamente.
  *  Os tuítes podem conter, além da mensagem de texto, um anexo qualquer.
  *  Há um método para retornar, a qualquer momento, qual a hashtag mais usada em toda a história do sistema.
+ *
+ *  T: tipo de anexo suportado
  */
-public class TuiterLite {
+public class TuiterLite<T> {
 
     public static int TAMANHO_MAXIMO_TUITES = 120;
 
@@ -47,20 +49,31 @@ public class TuiterLite {
     /**
      *
      * @param usuario O autor do tuíte (não deve ser nulo)
-     * @param texto O texto desejado (nunca nulo)
+     * @param texto O texto desejado (nunca nulo nem vazio)
      * @return Um "tuíte", que será devidamente publicado no sistema
+     *
+     * @throws UsuarioDesconhecidoException se o usuário nãoexistir no sistema
+     * @throws TamanhoMaximoExcedidoException se o texto exceder {@link #TAMANHO_MAXIMO_TUITES} caracteres
      *
      * PS.: Se o texto exceder o limite pré-definido, ou o usuário não estiver cadastrado, return null
      */
-    public Tuite tuitarAlgo(Usuario usuario, String texto) throws UsuarioDesconhecidoException {
+    public Tuite<T> tuitarAlgo(Usuario usuario, String texto)
+            throws UsuarioDesconhecidoException, TamanhoMaximoExcedidoException {
 
-        if (texto == null || texto.length() == 0 || texto.length() > TAMANHO_MAXIMO_TUITES ||
-                usuario == null || !this.usuarioByEmail.containsKey(usuario.getEmail())) {
-            return null;
+        if (texto == null || usuario == null || texto.length() == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (texto.length() > TAMANHO_MAXIMO_TUITES) {
+            throw new TamanhoMaximoExcedidoException(texto.length() - TAMANHO_MAXIMO_TUITES);
+        }
+
+        if (!this.usuarioByEmail.containsKey(usuario.getEmail())) {
+            throw new UsuarioDesconhecidoException();
         }
 
         Set<String> hashtags = obterHashtags(texto);
-        Tuite tuite = new Tuite(usuario, texto, hashtags);
+        Tuite<T> tuite = new Tuite<>(usuario, texto, hashtags);
 
         // atualiza os contadores de hashtags do sistema
         for (String hashtag : hashtags) {
@@ -73,6 +86,8 @@ public class TuiterLite {
                 this.contadorDaHashtagMaisComum = novoContador;
             }
         }
+
+        usuario.incrementarContTuites();
 
         return tuite;
     }
