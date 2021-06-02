@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 /**
@@ -132,6 +133,92 @@ public class TuiterLite<T> {
         return Character.isAlphabetic(c) || Character.isDigit(c);
     }
 
+    public static void main(String[] args) {
+
+        // lendo de arquivo via Scanner
+
+        File arquivo = new File("/Users/vinicius/git/Comp2_2020_2/README.md");  // path absoluto ou relativo
+
+        Scanner sc;
+
+        try {
+            sc = new Scanner(arquivo);
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não existe.");
+            return;
+        }
+
+        while (sc.hasNext()) {
+            String linha = sc.nextLine();
+            System.out.println(linha);
+        }
 
 
+        // lendo de arquivo via FileReader / BufferedReader
+
+        FileReader fileReader = null;
+        BufferedReader bufferedReader = null;
+
+        try {
+            fileReader = new FileReader(arquivo);
+            bufferedReader = new BufferedReader(fileReader);
+
+            while (bufferedReader.ready()) {
+                String linha = bufferedReader.readLine();
+                // faz o que quiser com a linha lida
+                System.out.println(linha);
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não existe.");
+            return;
+
+        } catch (IOException e) {
+            System.out.println("Erro na leitura do arquivo: " + e.getLocalizedMessage());
+
+        } finally {
+            closeResources(new Closeable[] {fileReader, bufferedReader});
+        }
+
+        // escrevendo em arquivo via FileWriter / BufferedWriter
+
+
+        File novoArquivo = new File("novoArquivo.txt");
+        int contTentativas = 0;
+        while (novoArquivo.exists()) {
+            novoArquivo = new File(
+                    String.format("novoArquivo(%d).txt", ++contTentativas));
+        }
+
+        FileWriter fileWriter = null;
+        BufferedWriter bufferedWriter = null;
+
+        try {
+            fileWriter = new FileWriter(novoArquivo);
+            bufferedWriter = new BufferedWriter(fileWriter);
+
+            bufferedWriter.write("Escrevendo algo no arquivo!!!!!");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não existe.");
+
+        } catch (IOException e) {
+            System.out.println("Erro na leitura do arquivo: " + e.getLocalizedMessage());
+
+        } finally {
+            closeResources(new Closeable[] {bufferedWriter, bufferedReader});
+        }
+    }
+
+    private static void closeResources(Closeable[] closeables) {
+        try {
+            for (Closeable closeable : closeables) {
+                if (closeable != null) {
+                    closeable.close();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
