@@ -6,6 +6,10 @@ import modelo.Partida;
 import modelo.ResultadoPartida;
 import modelo.Usuario;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Esboço de plataforma para jogo de xadrez online. Cada partida é disputada por dois jogadores,
  * um jogando com as peças brancas, outro jogando com as peças negras.
@@ -17,29 +21,13 @@ import modelo.Usuario;
  */
 public class XadrezOnline {
 
-    // Pontuação inicial de um usuário ao se cadastrar no sistema
-    public static final int PONTUACAO_INICIAL = 1000;
+    private Map<String, Usuario> usuarioByNome;
 
-    // Percentual mínimo de diferença para que as pontuações de dois jogadores NÃO
-    // sejam consideradas semelhantes
-    public static final int PERCENTUAL_PARA_SIMILARIDADE = 1;  // 1%
+    private Map<Modalidade, Set<Usuario>> usuarioAceitandoConviteByModalidade;
 
-    // Variação absoluta da pontuação do jogador mais forte quando perde do jogador mais fraco,
-    // e também do jogador mais fraco quando ganha do mais forte
-    public static final int DELTA_GRANDE = 8;
-
-    // Variação absoluta da pontuação do vencedor e do perdedor de uma partida (para cima e
-    // para baixo, respectivemente), quando ambos tem pontuação semelhante (isto é, são considerados
-    // jogadores de mesma força relativa)
-    public static final int DELTA_MEDIO = 5;
-
-    // Variação absoluta da pontuação do jogador mais forte quando ganha do jogador mais fraco,
-    // e também do jogador mais fraco quando perde do mais forte
-    public static final int DELTA_PEQUENO = 2;
-
-    // Variação absoluta da pontuação do jogador mais forte e do jogador mais fraco (para baixo e
-    // para cima, respectivemente), em caso de empate
-    public static final int DELTA_MINIMO = 1;
+    public XadrezOnline() {
+        this.usuarioByNome = new HashMap<>();
+    }
 
     /**
      * Cadastra um usuário. O username precisa ser único.
@@ -52,12 +40,19 @@ public class XadrezOnline {
      */
     public Usuario cadastrarUsuario(String username, String senha)
             throws UsuarioJaExisteException {
-        return null;  // ToDo IMPLEMENT ME!
+
+        if (this.usuarioByNome.containsKey(username)) {
+            throw new UsuarioJaExisteException();
+        }
+
+        this.usuarioByNome.put(username, new Usuario(username, senha));
     }
 
     /**
-     * Loga um usuário no sistema. Quando o usuário se loga, ele passa a estar disponível para ser
-     * escolhido pelo sistema como adversário de outro usuário que deseja jogar.
+     * Loga um usuário no sistema. Quando o usuário se loga, ele passa a poder:
+     * - escolher um adversário para jogar uma partida, ou
+     * - se fazer disponível para ser escolhido pelo sistema como adversário
+     *   de outro usuário que deseja jogar.
      *
      * @param username o nome do usuário
      * @param senha a senha do usuário para validação
@@ -67,7 +62,18 @@ public class XadrezOnline {
      */
     public void logIn(String username, String senha)
             throws UsuarioDesconhecidoException, SenhaIncorretaException {
-        // ToDo IMPLEMENT ME!
+
+        Usuario usuario = this.usuarioByNome.get(username);
+
+        if (usuario == null) {
+            throw new UsuarioDesconhecidoException();
+        }
+
+        if (!usuario.validarSenha(senha)) {
+            throw new SenhaIncorretaException();
+        }
+
+        usuario.setLogado(true);
     }
 
     /**
@@ -80,7 +86,18 @@ public class XadrezOnline {
      */
     public void logOut(String username)
             throws UsuarioDesconhecidoException, UsuarioNaoLogadoException {
-        // ToDo IMPLEMENT ME!
+
+        Usuario usuario = this.usuarioByNome.get(username);
+
+        if (usuario == null) {
+            throw new UsuarioDesconhecidoException();
+        }
+
+        if (!usuario.isLogado()) {
+            throw new UsuarioNaoLogadoException();
+        }
+
+        usuario.setLogado(false);
     }
 
     /**
@@ -130,21 +147,21 @@ public class XadrezOnline {
      * A pontuação deve ser atualizada da seguinte maneira:
      *
      * - caso os dois jogadores tenham pontuação semelhante (isto é, caso a DIFERENÇA ABSOLUTA entre suas
-     *   pontuações na modalidade da partida informada seja INFERIOR A {@link #PERCENTUAL_PARA_SIMILARIDADE}%
+     *   pontuações na modalidade da partida informada seja INFERIOR A {@link Config#PERCENTUAL_PARA_SIMILARIDADE}%
      *   da pontuação do jogador de maior pontuação dentre aqueles dois jogadores, naquela modalidade), então:
-     *   --> o vencedor deve GANHAR {@link #DELTA_MEDIO} PONTOS naquela modalidade, e
-     *   --> o perdedor deve PERDER {@link #DELTA_MEDIO} PONTOS naquela modalidade;
+     *   --> o vencedor deve GANHAR {@link Config#DELTA_MEDIO} PONTOS naquela modalidade, e
+     *   --> o perdedor deve PERDER {@link Config#DELTA_MEDIO} PONTOS naquela modalidade;
      *   --> em caso de empate as pontuações permanecem inalteradas.
      *
      * - caso contrário,
      *   --> o jogador de MAIOR pontuação na modalidade da partida informada (dentre os dois jogadores da partida)
-     *       deve GANHAR {@link #DELTA_PEQUENO} PONTOS naquela modalidade em caso de vitória sua na partida, e
-     *       deve PERDER {@link #DELTA_GRANDE} PONTOS naquela modalidade em caso de derrota sua na partida;
+     *       deve GANHAR {@link Config#DELTA_PEQUENO} PONTOS naquela modalidade em caso de vitória sua na partida, e
+     *       deve PERDER {@link Config#DELTA_GRANDE} PONTOS naquela modalidade em caso de derrota sua na partida;
      *   --> o jogador de MENOR pontuação na modalidade da partida informada (dentre os dois jogadores da partida)
-     *       deve GANHAR {@link #DELTA_GRANDE} PONTOS naquela modalidade em caso de vitória sua na partida, e
-     *       deve PERDER {@link #DELTA_PEQUENO} PONTOS naquela modalidade em caso de derrota sua na partida;
-     *   --> em caso de empate o jogador de MAIOR pontuação PERDE {@link #DELTA_MINIMO} pontos,
-     *       e o jogador de MENOR pontuação GANHA {@link #DELTA_MINIMO} pontos.
+     *       deve GANHAR {@link Config#DELTA_GRANDE} PONTOS naquela modalidade em caso de vitória sua na partida, e
+     *       deve PERDER {@link Config#DELTA_PEQUENO} PONTOS naquela modalidade em caso de derrota sua na partida;
+     *   --> em caso de empate o jogador de MAIOR pontuação PERDE {@link Config#DELTA_MINIMO} pontos,
+     *       e o jogador de MENOR pontuação GANHA {@link Config#DELTA_MINIMO} pontos.
      *
      */
     private void atualizarPontuacoes(Partida partidaConcluida) {

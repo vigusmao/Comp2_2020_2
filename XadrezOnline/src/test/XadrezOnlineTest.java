@@ -1,5 +1,6 @@
 package test;
 
+import controle.Config;
 import controle.XadrezOnline;
 import controle.excecoes.*;
 import modelo.Modalidade;
@@ -173,8 +174,8 @@ public class XadrezOnlineTest {
     public void testarPontuacaoInicial() {
         for (Modalidade modalidade : Modalidade.values()) {
             assertEquals("A pontuação inicial de cada jogador ao entrar no sistema deve ser de " +
-                            XadrezOnline.PONTUACAO_INICIAL + " pontos",
-                    XadrezOnline.PONTUACAO_INICIAL, usuario1.getPontuacao(modalidade));
+                            Config.PONTUACAO_INICIAL + " pontos",
+                    Config.PONTUACAO_INICIAL, usuario1.getPontuacao(modalidade));
         }
     }
 
@@ -187,10 +188,10 @@ public class XadrezOnlineTest {
 
         Partida partida;
 
-        final double fator = XadrezOnline.PERCENTUAL_PARA_SIMILARIDADE / 100.0;
+        final double fator = Config.PERCENTUAL_PARA_SIMILARIDADE / 100.0;
 
-        int pontuacaoCorrenteUsuario1 = XadrezOnline.PONTUACAO_INICIAL;
-        int pontuacaoCorrenteUsuario2 = XadrezOnline.PONTUACAO_INICIAL;
+        int pontuacaoCorrenteUsuario1 = Config.PONTUACAO_INICIAL;
+        int pontuacaoCorrenteUsuario2 = Config.PONTUACAO_INICIAL;
 
         // enquanto ambos os jogadores possuem pontuações próximas...
         while (Math.abs(pontuacaoCorrenteUsuario1 - pontuacaoCorrenteUsuario2) <
@@ -200,8 +201,8 @@ public class XadrezOnlineTest {
             partida = xadrezOnline.iniciarPartida(usuario1, usuario2, Modalidade.RAPID);
             xadrezOnline.concluirPartida(partida, ResultadoPartida.VITORIA_JOGADOR_BRANCAS);
 
-            pontuacaoCorrenteUsuario1 += XadrezOnline.DELTA_MEDIO;
-            pontuacaoCorrenteUsuario2 -= XadrezOnline.DELTA_MEDIO;
+            pontuacaoCorrenteUsuario1 += Config.DELTA_MEDIO;
+            pontuacaoCorrenteUsuario2 -= Config.DELTA_MEDIO;
 
             assertEquals(pontuacaoCorrenteUsuario1, usuario1.getPontuacao(Modalidade.RAPID));
             assertEquals(pontuacaoCorrenteUsuario2, usuario2.getPontuacao(Modalidade.RAPID));
@@ -220,8 +221,8 @@ public class XadrezOnlineTest {
         partida = xadrezOnline.iniciarPartida(usuario1, usuario2, Modalidade.RAPID);
         xadrezOnline.concluirPartida(partida, ResultadoPartida.VITORIA_JOGADOR_BRANCAS);
 
-        pontuacaoCorrenteUsuario1 += XadrezOnline.DELTA_PEQUENO;
-        pontuacaoCorrenteUsuario2 -= XadrezOnline.DELTA_PEQUENO;
+        pontuacaoCorrenteUsuario1 += Config.DELTA_PEQUENO;
+        pontuacaoCorrenteUsuario2 -= Config.DELTA_PEQUENO;
 
         assertEquals(pontuacaoCorrenteUsuario1, usuario1.getPontuacao(Modalidade.RAPID));
         assertEquals(pontuacaoCorrenteUsuario2, usuario2.getPontuacao(Modalidade.RAPID));
@@ -230,8 +231,8 @@ public class XadrezOnlineTest {
         partida = xadrezOnline.iniciarPartida(usuario1, usuario2, Modalidade.RAPID);
         xadrezOnline.concluirPartida(partida, ResultadoPartida.EMPATE);
 
-        pontuacaoCorrenteUsuario1 -= XadrezOnline.DELTA_MINIMO;
-        pontuacaoCorrenteUsuario2 += XadrezOnline.DELTA_MINIMO;
+        pontuacaoCorrenteUsuario1 -= Config.DELTA_MINIMO;
+        pontuacaoCorrenteUsuario2 += Config.DELTA_MINIMO;
 
         assertEquals(pontuacaoCorrenteUsuario1, usuario1.getPontuacao(Modalidade.RAPID));
         assertEquals(pontuacaoCorrenteUsuario2, usuario2.getPontuacao(Modalidade.RAPID));
@@ -240,8 +241,8 @@ public class XadrezOnlineTest {
         partida = xadrezOnline.iniciarPartida(usuario1, usuario2, Modalidade.RAPID);
         xadrezOnline.concluirPartida(partida, ResultadoPartida.VITORIA_JOGADOR_NEGRAS);
 
-        pontuacaoCorrenteUsuario1 -= XadrezOnline.DELTA_GRANDE;
-        pontuacaoCorrenteUsuario2 += XadrezOnline.DELTA_GRANDE;
+        pontuacaoCorrenteUsuario1 -= Config.DELTA_GRANDE;
+        pontuacaoCorrenteUsuario2 += Config.DELTA_GRANDE;
 
         assertEquals(pontuacaoCorrenteUsuario1, usuario1.getPontuacao(Modalidade.RAPID));
         assertEquals(pontuacaoCorrenteUsuario2, usuario2.getPontuacao(Modalidade.RAPID));

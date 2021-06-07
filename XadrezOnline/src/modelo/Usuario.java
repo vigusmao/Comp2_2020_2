@@ -7,10 +7,17 @@ public class Usuario {
 
     private String username;
     private int hashSenha;
+    private boolean logado;
 
     public Usuario(String username, String senha) {
         this.username = username;
-        this.hashSenha = Objects.hash(senha);  // não se grava diretamente uma senha pessoal
+        this.hashSenha = obterHash(senha);
+        this.logado = false;
+    }
+
+    private static int obterHash(String senha) {
+        // não se deve gravar diretamente uma senha pessoal, mas sim um "hash" da senha
+        return Objects.hash(senha);
     }
 
     public int getPontuacao(Modalidade modalidade) {
@@ -33,12 +40,20 @@ public class Usuario {
         return null;  // ToDo IMPLEMENT ME!
     }
 
-    public int getHashSenha() {
-        return this.hashSenha;
+    public boolean validarSenha(String senhaASerValidada) {
+        return this.hashSenha == obterHash(senhaASerValidada);
     }
 
     public List<Partida> getHistoricoPartidas() {
         return null;  // ToDo IMPLEMENT ME!
+    }
+
+    public boolean isLogado() {
+        return logado;
+    }
+
+    public void setLogado(boolean logado) {
+        this.logado = logado;
     }
 
     public void aceitarConvites(Modalidade modalidade) {
