@@ -96,7 +96,7 @@ public class Biblioteca {
      *         ou não seja nem mesmo um usuário cadastrado na biblioteca, retorna zero, não deve nada
      */
     public int getQuantidadeDeLivrosDevidos(Usuario usuario) {
-        // ToDo IMPLEMENT ME!!!
+        return 0;  // ToDo IMPLEMENT ME!!!
     }
 
     /**

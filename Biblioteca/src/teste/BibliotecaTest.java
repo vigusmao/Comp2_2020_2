@@ -98,7 +98,7 @@ public class BibliotecaTest {
     }
 
     @Test
-    public void testeEmprestarEDevolverLivro()
+    public void testeEmprestarLivro()
             throws UsuarioNaoCadastradoException, LimiteEmprestimosExcedidoException, DevolucaoInvalidaException {
         assertTrue("A biblioteca deve poder emprestar livros (que estejam disponíveis) para usuários que não tenham" +
                 " excedido o limite de empréstimos", biblioteca.emprestarLivro(livroAbundante, usuario1));
@@ -106,7 +106,12 @@ public class BibliotecaTest {
                 1, biblioteca.getQuantidadeDeLivrosDevidos(usuario1));
         assertEquals("O empréstimo de um livro deve atualizar a quantidade daquele livro na estante",
                 4, biblioteca.getQuantidadeDeLivrosNaEstante(livroAbundante));
+    }
 
+    @Test
+    public void testeDevolverLivro()
+            throws UsuarioNaoCadastradoException, LimiteEmprestimosExcedidoException, DevolucaoInvalidaException {
+        biblioteca.emprestarLivro(livroAbundante, usuario1);
         biblioteca.receberDevolucaoLivro(livroAbundante, usuario1);
         assertEquals("A devolução de um livro deve atualizar a quantidade de livros devidos por aquele usuário",
                 0, biblioteca.getQuantidadeDeLivrosDevidos(usuario1));
