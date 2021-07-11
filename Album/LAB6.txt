@@ -1,0 +1,27 @@
+1) Faça todos os unit tests passarem.
+
+2) Crie uma interface Colecionavel com os métodos
+      Image getImagem()
+      int getPosicao()
+
+3) Crie uma classe Selo que possua os métodos públicos
+      float getValorNominal()
+      String getPais()
+   e que implemente a interface Colecionavel
+
+4) Adapte a classe Album para poder colecionar qualquer coisa que seja Colecionavel
+   (PS.: Os testes têm que continuar passando.)
+
+------> CHECKPOINT: Envie o código fazendo funcionar até aqui.
+------> Via e-mail, mande as classes (zipadas, possivelmente), indicando
+        que é o código referente ao LAB6 até o exercício 4
+------> Ou, se estiver mandando código salvo em um repositório pessoal,
+        indique os dois commits (o "antes" e o "depois")
+
+5) Adapte novamente a classe Album (e outras classes que precisarem acompanhar
+   as mudanças), fazendo com que cada instância de Album
+   possa colecionar, se quisermos, um ÚNICO tipo de objeto colecionável.
+
+6) Adicione um unit test (um único método) onde você terá duas instâncias de Album:
+   uma para Selos e outra para Figurinhas, fazendo algum teste muito básico
+   com cada instância dessas.

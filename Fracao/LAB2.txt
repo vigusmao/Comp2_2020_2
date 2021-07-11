@@ -1,0 +1,6 @@
+LAB 2:
+
+Faça os unit testes em FracaoTest passarem,
+segundo o espírito do Test-Driven Development.
+
+PS.: Não modifique os testes!
